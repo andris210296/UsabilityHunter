@@ -19,7 +19,7 @@ public class UsabilityRest {
 	@POST
 	@Consumes("application/json")
 	@Produces("application/json")
-	@Path("/utest")
+	@Path("/runtest")
 	public String setTest(String content) {
 		Gson gson = new Gson();
 		try {
@@ -31,7 +31,7 @@ public class UsabilityRest {
 			String url = map.get("url");
 	
 
-			return gson.toJson(JsoupRun.pageHrefValue(url));
+			return gson.toJson(JsoupRun.getLogoPage(url));
 
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -10,7 +10,7 @@ import com.google.auth.Credentials;
 import com.google.cloud.vision.v1.*;
 import com.google.cloud.vision.v1.Feature.*;
 
-public class GoogleVision {
+public class GoogleVision implements Runnable {
 	
 
 	public static String detectLogosGcs(String url) throws Exception, IOException {
@@ -37,6 +37,12 @@ public class GoogleVision {
 			}
 		}
 		return "Did not work!";
+		
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
 		
 	}
 

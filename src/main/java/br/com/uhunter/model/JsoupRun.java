@@ -19,10 +19,8 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.vision.v1.Vision;
 import com.google.api.services.vision.v1.VisionScopes;
-import com.google.api.services.vision.v1.model.AnnotateImageRequest;
-import com.google.api.services.vision.v1.model.AnnotateImageResponse;
-import com.google.api.services.vision.v1.model.BatchAnnotateImagesRequest;
-import com.google.api.services.vision.v1.model.Image;
+import com.google.api.services.vision.v1.model.*;
+import com.google.appengine.api.ThreadManager;
 import com.google.common.collect.ImmutableList;
 
 public class JsoupRun {
@@ -55,7 +53,7 @@ public class JsoupRun {
 	 * @return
 	 * @throws IOException
 	 */
-	public static LinkedHashMap<String,String> pageHrefValue(String url) throws IOException {
+	public static LinkedHashMap<String, String> pageHrefValue(String url) throws IOException {
 
 		Elements links = urlToDocument(url).select("a[href]");
 
@@ -105,16 +103,32 @@ public class JsoupRun {
 		return images;
 	}
 
-	public static LinkedHashMap<String,String> getLogoPage(String url) throws Exception {
+	public static LinkedHashMap<String, String> getLogoPage(String url) throws Exception {
 
 		ArrayList<String> images = getImagesPage(url);
-		
+
 		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
-		
+
 		for (String string : images) {
-			map.put(string, GoogleVision.detectLogosGcs(string));
+
+			Thread thread = ThreadManager.createBackgroundThread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						map.put(string, GoogleVision.detectLogosGcs(string));
+						System.out.println("running from thread!");
+
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
+			});
+
+			thread.start();
+
 		}
-		
 		return map;
 
 	}

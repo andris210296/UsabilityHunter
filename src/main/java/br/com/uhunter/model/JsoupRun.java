@@ -1,12 +1,23 @@
 package br.com.uhunter.model;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.GeneralSecurityException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
@@ -24,6 +35,7 @@ import com.google.api.services.vision.v1.model.AnnotateImageResponse;
 import com.google.api.services.vision.v1.model.BatchAnnotateImagesRequest;
 import com.google.api.services.vision.v1.model.Image;
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.ByteString;
 
 public class JsoupRun {
 
@@ -55,7 +67,7 @@ public class JsoupRun {
 	 * @return
 	 * @throws IOException
 	 */
-	public static LinkedHashMap<String,String> pageHrefValue(String url) throws IOException {
+	public static LinkedHashMap<String, String> pageHrefValue(String url) throws IOException {
 
 		Elements links = urlToDocument(url).select("a[href]");
 
@@ -105,17 +117,15 @@ public class JsoupRun {
 		return images;
 	}
 
-	public static LinkedHashMap<String,String> getLogoPage(String url) throws Exception {
+	public static LinkedHashMap<String, String> getLogoPage(String url) throws Exception {
 
-		ArrayList<String> images = getImagesPage(url);
+		ScreenshotWebPageModeler screenshotModeler = new ScreenshotWebPageModeler(url);		
 		
 		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
-		
-		for (String string : images) {
-			map.put(string, GoogleVision.detectLogosGcs(string));
-		}
-		
-		return map;
+
+		map.put("Logo", GoogleVision.detectLogosGcs(screenshotModeler.getImagePiece(0,0)));
+
+		return map;	
 
 	}
 }

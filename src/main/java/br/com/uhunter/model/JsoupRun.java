@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.GeneralSecurityException;
+import java.text.Collator;
+import java.text.Normalizer;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,6 +20,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.hsqldb.lib.HashMap;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
@@ -117,15 +120,38 @@ public class JsoupRun {
 		return images;
 	}
 
-	public static LinkedHashMap<String, String> getLogoPage(String url) throws Exception {
+	public static LinkedHashMap<String, LinkedHashMap<String, String>> getLogoPage(String url) throws Exception {
 
-		ScreenshotWebPageModeler screenshotModeler = new ScreenshotWebPageModeler(url);		
+		List<String> logoResult = new ArrayList<>();
 		
-		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+		ScreenshotWebPageModeler screenshotModeler = new ScreenshotWebPageModeler(url);
 
-		map.put("Logo", GoogleVision.detectLogosGcs(screenshotModeler.getImagePiece(0,0)));
+		LinkedHashMap<String, LinkedHashMap<String, String>> map = new LinkedHashMap<>();
+		LinkedHashMap<String, String> mapDescription = new LinkedHashMap<>();
 
-		return map;	
+		Elements elements = urlToDocument(url).select("title");	
+						
+		try {
+			logoResult = GoogleVision.detectLogos(screenshotModeler.getImagePiece(0, 0));
+		}catch (Exception e) {
+			logoResult = GoogleVision.detectText(screenshotModeler.getImagePiece(0, 0));
+		}
+
+		for (String logo : logoResult) {
+			String logoReplaced = Normalizer.normalize(logo, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+			String titleReplaced = Normalizer.normalize(elements.text(), Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+			if (titleReplaced.toLowerCase().contains(logoReplaced.toLowerCase()) || logoResult.size() == 1) {
+				mapDescription.put("result", "true");
+				mapDescription.put("logoName", logo);
+			}
+		}		
+		if (mapDescription.size() == 0) {
+			mapDescription.put("result", "false");
+			mapDescription.put("logoName", elements.text().toLowerCase());
+		}
+		map.put("Logo on top-left", mapDescription);
+
+		return map;
 
 	}
 }

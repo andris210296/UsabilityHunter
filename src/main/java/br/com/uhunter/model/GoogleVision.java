@@ -12,14 +12,46 @@ import com.google.protobuf.ByteString;
 
 public class GoogleVision {
 
-	public static String detectLogosGcs(InputStream inputStream) throws Exception, IOException {
-				
+	public static List<String> detectLogos(InputStream inputStream) throws Exception {		
+
 		List<AnnotateImageRequest> requests = new ArrayList<>();
+		List<String> logos = new ArrayList<>();
 
 		ByteString imgBytes = ByteString.readFrom(inputStream);
 
 		Image img = Image.newBuilder().setContent(imgBytes).build();
 		Feature feat = Feature.newBuilder().setType(Type.LOGO_DETECTION).build();
+		AnnotateImageRequest request = AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
+		requests.add(request);
+
+		ImageAnnotatorClient client = ImageAnnotatorClient.create();
+		BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
+		List<AnnotateImageResponse> responses = response.getResponsesList();
+
+		for (AnnotateImageResponse res : responses) {
+			if (res.hasError()) {
+				throw new Exception();
+			}
+
+			for (EntityAnnotation annotation : res.getLogoAnnotationsList()) {
+				logos.add(annotation.getDescription());
+			}
+			return logos;
+		}
+
+		logos.add("Error!");
+		return logos;
+	}
+
+	public static List<String> detectText(InputStream inputStream) throws Exception, IOException {
+		
+		List<AnnotateImageRequest> requests = new ArrayList<>();
+		List<String> texts = new ArrayList<>();
+
+		ByteString imgBytes = ByteString.readFrom(inputStream);
+
+		Image img = Image.newBuilder().setContent(imgBytes).build();
+		Feature feat = Feature.newBuilder().setType(Type.TEXT_DETECTION).build();
 		AnnotateImageRequest request = AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
 		requests.add(request);
 
@@ -29,17 +61,22 @@ public class GoogleVision {
 
 			for (AnnotateImageResponse res : responses) {
 				if (res.hasError()) {
-					return "Error: " + res.getError().getMessage();
+					texts.add("Error: " + res.getError().getMessage());
+					return texts;
 				}
 
-				for (EntityAnnotation annotation : res.getLogoAnnotationsList()) {
-					return annotation.getDescription();
+				for (EntityAnnotation annotation : res.getTextAnnotationsList()) {
+					texts.add(annotation.getDescription());
 				}
+				return texts;
 			}
-		}catch (Exception e) {
-			return "Did not work! "+e.getMessage();
+		} catch (Exception e) {
+			texts.add("Error: " + e.getMessage());
+			return texts;
 		}
-		return "Did not work!";	
-		
+		texts.add("Error!");
+		return texts;
+
 	}
+
 }

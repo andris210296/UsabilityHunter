@@ -3,6 +3,8 @@ package br.com.uhunter.model;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -15,10 +17,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
 
 
 public class ScreenshotWebPageModeler {
-
-	private static final String API_KEY ="ak-qy3qb-j4fnn-p97q0-qj101-x5vxj"; // "ak-c57am-7waaf-yrbn0-zbm79-8fycw"; 
-																			 // "ak-6qkw8-fcb6p-s0asj-tzb5b-yv1qa";
-	private static final String URL_API = "http://PhantomJsCloud.com/api/browser/v2/" + API_KEY + "/";
+	
+	private List<String> keys = new ArrayList<>();	
 
 	private static final Point LOGO_DETECTION = new Point(640, 480);
 
@@ -27,6 +27,8 @@ public class ScreenshotWebPageModeler {
 
 	private String url;
 	private InputStream imputStream;
+	
+	private InputStream[][] imputStreamMatrix;
 
 	/**
 	 * This constructor method receives an url and takes a screenshot of a web page.
@@ -35,8 +37,14 @@ public class ScreenshotWebPageModeler {
 	 * @throws Exception
 	 */
 	public ScreenshotWebPageModeler(String url) throws Exception {
+		getKeys().add("ak-6qkw8-fcb6p-s0asj-tzb5b-yv1qa");
+		getKeys().add("ak-c57am-7waaf-yrbn0-zbm79-8fycw");
+		getKeys().add("ak-qy3qb-j4fnn-p97q0-qj101-x5vxj");
+		
 		setUrl(url);
 		setImputStream(takeShot(getUrl()));
+		setImputStreamMatrix(bufferedImageToInputStream(getImagePieces()));	
+		
 	}
 
 	/**
@@ -48,19 +56,32 @@ public class ScreenshotWebPageModeler {
 	 * @throws Exception
 	 */
 	private InputStream takeShot(String url) throws Exception {
-
-		HttpClient httpClient = HttpClientBuilder.create().build();
-		HttpPost request = new HttpPost(URL_API);
-		StringEntity params = new StringEntity("{url:\"" + url + "\",renderType:\"jpg\",outputAsJson:false}");
-		request.addHeader("content-type", "application/json");
-		request.setEntity(params);
-		HttpResponse response = httpClient.execute(request);
-		HttpEntity entity = response.getEntity();
-
+		int httpResponseStatus = 0;
+		HttpEntity entity = null;
+		HttpResponse httpResponse = null;
+		int quantityKey = 0;
+		while(httpResponseStatus != 200 && quantityKey <= getKeys().size()) {
+		
+			HttpClient httpClient = HttpClientBuilder.create().build();
+			HttpPost request = new HttpPost("http://PhantomJsCloud.com/api/browser/v2/" + getKeys().get(quantityKey) + "/");
+			StringEntity params = new StringEntity("{url:\"" + url + "\",renderType:\"jpg\",outputAsJson:false}");
+			request.addHeader("content-type", "application/json");
+			request.setEntity(params);
+			httpResponse = httpClient.execute(request);
+						
+			httpResponseStatus = httpResponse.getStatusLine().getStatusCode();			
+			quantityKey += 1;
+		}
+		
+		if(httpResponseStatus != 200) {
+			throw new Exception("Error with API Key");
+		}
+	
+		entity = httpResponse.getEntity();
 		InputStream instream = entity.getContent();
-
-		setImputStream(instream);
-
+	
+		setImputStream(instream);	
+		
 		return instream;
 	}
 
@@ -185,8 +206,9 @@ public class ScreenshotWebPageModeler {
 	 * @throws Exception
 	 */
 	public InputStream getImagePiece(int v, int h) throws Exception {
-		return bufferedImageToInputStream(getImagePieces())[v][h];
+		return getImputStreamMatrix()[v][h];
 	}
+	
 
 	public static void inputStreamToFile(InputStream inputStream) throws Exception {
 		FileOutputStream output = new FileOutputStream("C:/Users/andri/OneDrive/Documentos/Imgs/image.jpg");
@@ -235,5 +257,23 @@ public class ScreenshotWebPageModeler {
 	private void setVerticalPieces(int verticalPieces) {
 		this.verticalPieces = verticalPieces;
 	}
+
+	public InputStream[][] getImputStreamMatrix() {
+		return imputStreamMatrix;
+	}
+
+	public void setImputStreamMatrix(InputStream[][] imputStreamMatrix) {
+		this.imputStreamMatrix = imputStreamMatrix;
+	}
+
+	public List<String> getKeys() {
+		return keys;
+	}
+
+	public void setKeys(List<String> keys) {
+		this.keys = keys;
+	}
+	
+	
 
 }

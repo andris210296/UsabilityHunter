@@ -1,46 +1,14 @@
 package br.com.uhunter.model;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.security.GeneralSecurityException;
-import java.text.Collator;
-import java.text.Normalizer;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.hsqldb.lib.HashMap;
+import java.io.IOException;
+import java.util.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
-import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.vision.v1.Vision;
-import com.google.api.services.vision.v1.VisionScopes;
-import com.google.api.services.vision.v1.model.AnnotateImageRequest;
-import com.google.api.services.vision.v1.model.AnnotateImageResponse;
-import com.google.api.services.vision.v1.model.BatchAnnotateImagesRequest;
-import com.google.api.services.vision.v1.model.Image;
-import com.google.common.collect.ImmutableList;
-import com.google.protobuf.ByteString;
 
-public class JsoupRun {
+public class UsabilityRunTests {
 
 	private static int TIMEOUT = 10000;
 
@@ -122,32 +90,21 @@ public class JsoupRun {
 
 	public static LinkedHashMap<String, LinkedHashMap<String, String>> getLogoPage(String url) throws Exception {
 
-		List<String> logoResult = new ArrayList<>();
-		
-		ScreenshotWebPageModeler screenshotModeler = new ScreenshotWebPageModeler(url);
-
 		LinkedHashMap<String, LinkedHashMap<String, String>> map = new LinkedHashMap<>();
 		LinkedHashMap<String, String> mapDescription = new LinkedHashMap<>();
 
-		Elements elements = urlToDocument(url).select("title");	
-						
-		try {
-			logoResult = GoogleVision.detectLogos(screenshotModeler.getImagePiece(0, 0));
-		}catch (Exception e) {
-			logoResult = GoogleVision.detectText(screenshotModeler.getImagePiece(0, 0));
+		
+		LogoIdentification logoIdentification = new LogoIdentification(url);
+		String logo = logoIdentification.returnLogo();
+		
+		if (logo != null) {
+			mapDescription.put("result", "true");
+			mapDescription.put("logoName", logo);
 		}
-
-		for (String logo : logoResult) {
-			String logoReplaced = Normalizer.normalize(logo, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
-			String titleReplaced = Normalizer.normalize(elements.text(), Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
-			if (titleReplaced.toLowerCase().contains(logoReplaced.toLowerCase()) || logoResult.size() == 1) {
-				mapDescription.put("result", "true");
-				mapDescription.put("logoName", logo);
-			}
-		}		
+				
 		if (mapDescription.size() == 0) {
 			mapDescription.put("result", "false");
-			mapDescription.put("logoName", elements.text().toLowerCase());
+			mapDescription.put("logoName", "não foi");
 		}
 		map.put("Logo on top-left", mapDescription);
 

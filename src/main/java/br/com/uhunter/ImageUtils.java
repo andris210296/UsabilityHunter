@@ -69,5 +69,10 @@ public class ImageUtils {
 		}
 		output.close();
 	}
+	
+	public static void bufferedImageToFile(BufferedImage bufferedImage) throws Exception{
+		 File outputfile = new File("C:/Users/andri/OneDrive/Documentos/Imgs/image.jpg");
+		 ImageIO.write(bufferedImage, "jpg", outputfile);
+	}
 
 }

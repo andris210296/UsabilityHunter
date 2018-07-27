@@ -11,10 +11,10 @@ import org.junit.Test;
 
 import com.google.cloud.vision.v1.Vertex;
 
-public class NavigationOnLeftTest {
+public class TestNavigationOnLeft {
 	
 	@Test
-	public void getVertexesFromImage() throws Exception {
+	public void TestGetVertexesFromImage() throws Exception {
 				
 		List<Vertex> vertexes = populateListVertex1();	
 	
@@ -32,7 +32,7 @@ public class NavigationOnLeftTest {
 	}
 	
 	@Test
-	public void getCorrectTextFromGoogleVisionTest() throws Exception {
+	public void TestGetCorrectTextFromGoogleVisionTest() throws Exception {
 		
 		List<String> lines1 = populateLinesOfAParagraph1();
 		
@@ -48,7 +48,7 @@ public class NavigationOnLeftTest {
 	}
 
 	@Test
-	public void listOfParagraphFromPage() throws Exception {
+	public void TestListOfParagraphFromPage() throws Exception {
 		
 		List<String> lines1 = populateLinesOfAParagraph1();		
 		List<Vertex> vertexes = populateListVertex1();
@@ -73,7 +73,7 @@ public class NavigationOnLeftTest {
 	}
 	
 	@Test
-	public void blockHasLinkTest() throws Exception {
+	public void TestBlockHasLinkt() throws Exception {
 
 		List<String> lines1 = populateLinesOfAParagraph1();		
 		String url1 = "https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal";		
@@ -100,7 +100,7 @@ public class NavigationOnLeftTest {
 	}
 	
 	@Test
-	public void isTheQuantityOfLinksByWordsEnoughInAPieceOfWebPage() {
+	public void TestIsTheQuantityOfLinksByWordsEnoughInAPieceOfWebPage() {
 		
 		List<ParagraphText> paragraphs = new ArrayList<>();
 		List<String> blockLines = populateLinesOfAParagraph1();
@@ -115,7 +115,7 @@ public class NavigationOnLeftTest {
 	
 	
 	@Test
-	public void areThereLinksOnThePage() throws Exception{
+	public void TestAreThereLinksOnThePage() throws Exception{
 	
 		List<ParagraphText> paragraphs1 = NavigationOnLeft.getParagraphs("imgTest/wikipediaNavigation.jpg");
 		String url1 = "https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal";	

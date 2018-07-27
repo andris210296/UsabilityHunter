@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class LogoOnTopLeftCornerTest {
+public class TestLogoOnTopLeftCorner {
 
 	/**
 	 * This test verifies if the GoogleVision API works when you want to find out
@@ -18,10 +18,10 @@ public class LogoOnTopLeftCornerTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void getCorrectLogoFromGoogleVisionTest() throws Exception {
+	public void TestGetCorrectLogoFromGoogleVision() throws Exception {
 
 		String logo1 = "Google";
-		List<String> resultsLogo1 = getResultsFromGoogleVisionDetectLogo("imgTest/google.png");
+		List<String> resultsLogo1 = getResultsFromGoogleVisionDetectLogo("imgTest/google.jpg");
 		assertEquals(logo1, getLogoAfterVerificationWithUrlTitle(logo1, resultsLogo1));
 
 		String logo2 = "Wikipedia";
@@ -29,8 +29,12 @@ public class LogoOnTopLeftCornerTest {
 		assertEquals(logo2, getLogoAfterVerificationWithUrlTitle(logo2, resultsLogo2));
 
 		String logo3 = "StackOverflow";
-		List<String> resultsLogo3 = getResultsFromGoogleVisionDetectLogo("imgTest/stackoverflow.png");
+		List<String> resultsLogo3 = getResultsFromGoogleVisionDetectLogo("imgTest/stackoverflow.jpg");
 		assertEquals(logo3, getLogoAfterVerificationWithUrlTitle(logo3, resultsLogo3));
+		
+		String logo4 = "USP";
+		List<String> resultsLogo4 = getResultsFromGoogleVisionDetectLogo("imgTest/uspPage.jpg");
+		//assertEquals(logo4, getLogoAfterVerificationWithUrlTitle(logo4, resultsLogo4));
 
 	}
 
@@ -54,7 +58,7 @@ public class LogoOnTopLeftCornerTest {
 	 * has one of possible logos, ignoring any different character or spacing.
 	 */
 	@Test
-	public void stringComparation() {
+	public void TestIfTheStringIsInsideOfASentence() {
 
 		String title1 = "title";
 		String string1 = "title";
@@ -94,7 +98,7 @@ public class LogoOnTopLeftCornerTest {
 	}
 
 	@Test
-	public void sentenceComparation() {
+	public void TestIfTheSenteceIsInsideOfAnotherSentence() {
 		String title1 = "title with some other texts";
 		String string1 = "Titel";
 		String logo1 = setTitleAndStringsOnLogoIdentification(title1, string1);
@@ -130,7 +134,7 @@ public class LogoOnTopLeftCornerTest {
 	}
 
 	@Test
-	public void areTheseStringsSimilarTest() {
+	public void TestAreTheseStringsSimilar() {
 
 		LogoIdentification logoIdentification = new LogoIdentification();
 
@@ -151,7 +155,7 @@ public class LogoOnTopLeftCornerTest {
 	}
 	
 	@Test
-	public void wordsCombinationTest() {
+	public void TestWordsCombination() {
 
 		LogoIdentification logoIdentification = new LogoIdentification();
 

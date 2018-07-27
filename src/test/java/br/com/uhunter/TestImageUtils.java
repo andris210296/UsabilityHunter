@@ -10,10 +10,10 @@ import org.junit.Test;
 
 import com.google.cloud.vision.v1.Vertex;
 
-public class ImageUtilsTest {
+public class TestImageUtils {
 	
 	@Test
-	public void getTextFromAPieceOfImageTest() throws Exception {
+	public void TestGetTextFromAPieceOfImage() throws Exception {
 				
 		File file = new File("imgTest/wikipediaNavigation.jpg");
 		InputStream inputStream = new FileInputStream(file);
@@ -36,7 +36,7 @@ public class ImageUtilsTest {
 	}
 	
 	@Test
-	public void getTextFromAPieceOfImageWhenTheSquareIsRotatedTest() throws Exception {
+	public void TestGetTextFromAPieceOfImageWhenTheSquareIsRotated() throws Exception {
 				
 		File file = new File("imgTest/wikipediaNavigation.jpg");
 		InputStream inputStream = new FileInputStream(file);
@@ -58,7 +58,7 @@ public class ImageUtilsTest {
 	}
 	
 	@Test
-	public void getTextFromAPieceOfImageWhenTheVertexIsSmallTest() throws Exception {
+	public void TestGetTextFromAPieceOfImageWhenTheVertexIsSmall() throws Exception {
 		
 		List<String> strings1 = new ArrayList<>();
 		strings1.add("Dire, fare, pa");

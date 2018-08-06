@@ -11,6 +11,33 @@ import org.junit.Test;
 
 public class TestLogoOnTopLeftCorner {
 
+	@Test
+	public void TestLogoOnTopLeftCorner() throws Exception {
+		String url = "https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal";
+		File file = new File("imgTest/wikipediaMatrix_0_0.jpg");
+		InputStream inputStream = new FileInputStream(file);
+		
+		LogoIdentification logoIdentification = new LogoIdentification();
+		boolean result = logoIdentification.isThereALogoOnTopLeftCorner(url, inputStream);
+		
+		assertTrue(result);
+	}
+	
+	@Test
+	public void TestTitleWebPage() throws Exception {
+		String url1 = "https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal";		
+		String expectedTitle1 = "Wikipedia";						
+		String result1 = LogoIdentification.getWebPageTitleFromHtml(url1);		
+		String title1 = setTitleAndStringsOnLogoIdentification(result1, expectedTitle1);
+		assertEquals(expectedTitle1, title1);
+		
+		String url2 = "https://pt.stackoverflow.com/";		
+		String expectedTitle2 = "Stackoverflow";						
+		String result2 = LogoIdentification.getWebPageTitleFromHtml(url2);		
+		String title2 = setTitleAndStringsOnLogoIdentification(result2, expectedTitle2);
+		assertEquals(expectedTitle2, title2);		
+	}
+	
 	/**
 	 * This test verifies if the GoogleVision API works when you want to find out
 	 * logos inside of an image.

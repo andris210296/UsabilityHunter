@@ -1,14 +1,27 @@
 package br.com.uhunter;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.text.similarity.LevenshteinDistance;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 public class LogoIdentification {
 
 	private String pageTitle;
+	
+	
+	public boolean isThereALogoOnTopLeftCorner(String url, InputStream inputStream) throws Exception {
+		
+		List<String> logos = GoogleVision.detectLogo(inputStream);
+		setPageTitle(getWebPageTitleFromHtml(url));
+		
+		return isStringInsideOfTheTitle(logos) != null;
+	}
 
 	public String isStringInsideOfTheTitle(List<String> strings) {
 
@@ -23,23 +36,7 @@ public class LogoIdentification {
 		}
 		return null;
 	}
-
-	private String replaceAccentuation(String string) {
-		return Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
-	}
-
-	public void setPageTitle(String title) {
-		pageTitle = title;
-	}
-
-	public String getPageTitle() {
-		return pageTitle;
-	}
 	
-	public String getPageTitleWordsTogether() {
-		return pageTitle.replace(" ","");
-	}
-
 	public boolean areTheseStringSimilar(String string1, String string2) {
 
 		LevenshteinDistance levenshteinDistance = LevenshteinDistance.getDefaultInstance();
@@ -69,5 +66,26 @@ public class LogoIdentification {
 						
 		return combinations;
 	}
+	
+	public static String getWebPageTitleFromHtml(String url) throws Exception {
+		Document document = Jsoup.connect(url).timeout(10000).get();
+		return document.select("title").text();
+	}
+	
+	private String replaceAccentuation(String string) {
+		return Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+	}
 
+	public void setPageTitle(String title) {
+		pageTitle = title;
+	}
+
+	public String getPageTitle() {
+		return pageTitle;
+	}
+	
+	public String getPageTitleWordsTogether() {
+		return pageTitle.replace(" ","");
+	}
+	
 }

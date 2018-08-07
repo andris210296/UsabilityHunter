@@ -12,15 +12,16 @@ import org.junit.Test;
 public class TestLogoOnTopLeftCorner {
 
 	@Test
-	public void TestLogoOnTopLeftCorner() throws Exception {
+	public void TestIsThereALogoOnTopLeftCorner() throws Exception {
 		String url = "https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal";
 		File file = new File("imgTest/wikipediaMatrix_0_0.jpg");
 		InputStream inputStream = new FileInputStream(file);
 		
 		LogoIdentification logoIdentification = new LogoIdentification();
-		boolean result = logoIdentification.isThereALogoOnTopLeftCorner(url, inputStream);
+		String result = logoIdentification.isThereALogoOnTopLeftCorner(url, inputStream);
 		
-		assertTrue(result);
+		assertEquals("Wikipedia", result);
+		assertTrue(result != null);
 	}
 	
 	@Test

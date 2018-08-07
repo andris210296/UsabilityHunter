@@ -55,10 +55,52 @@ public class TestScreenshotWebPageModeler {
 
 		LogoIdentification logoIdentification = new LogoIdentification();
 		InputStream inputStream2 = ImageUtils.bufferedImageToInputStream(screenshotMatrix[0][0]);
-		boolean result = logoIdentification.isThereALogoOnTopLeftCorner("https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal", inputStream2);
+		String result = logoIdentification.isThereALogoOnTopLeftCorner("https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal", inputStream2);
 		
-		assertTrue(result);
+		assertEquals("Wikipedia", result);
+		assertTrue(result != null);
 		
 	}
+	
+	@Test
+	public void TestBufferedMatrixToInputStreamMatrix() throws Exception {
+		
+		File file = new File("imgTest/wikipediaScreenshot.jpg");
+		
+		BufferedImage[][] bufferedImages = new BufferedImage[2][2];
+		bufferedImages[0][0] = ImageIO.read(file);
+		bufferedImages[0][1] = ImageIO.read(file);
+		bufferedImages[1][0] = ImageIO.read(file);
+		bufferedImages[1][1] = ImageIO.read(file);
+		
+		ScreenshotWebPageModeler screenshotWebPageModeler = new ScreenshotWebPageModeler();		
+		InputStream[][] inputStreams = screenshotWebPageModeler.bufferedMatrixToInputStreamMatrix(bufferedImages);
+		
+		for(int i = 0; i < inputStreams.length; i ++)
+		{
+			for(int j = 0; j < inputStreams[0].length; j ++)
+			{
+				assertTrue(inputStreams[i][j] != null);				
+			}			
+		}				
+	}
+	
+	@Test
+	public void TestGetImagePiece() throws Exception {
+
+		String url = "https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal";		
+		LogoIdentification logoIdentification = new LogoIdentification();						
+		ScreenshotWebPageModeler screenshotWebPageModeler = new ScreenshotWebPageModeler(url);
+		InputStream inputStream = screenshotWebPageModeler.getImagePiece(0,0);		
+		String result = logoIdentification.isThereALogoOnTopLeftCorner(url, inputStream);		
+		assertEquals("Wikipedia", result);	
+		
+		String url2 = "https://pt.stackoverflow.com/";		
+		LogoIdentification logoIdentification2 = new LogoIdentification();						
+		ScreenshotWebPageModeler screenshotWebPageModeler2 = new ScreenshotWebPageModeler(url2);
+		InputStream inputStream2 = screenshotWebPageModeler2.getImagePiece(0,0);		
+		String result2 = logoIdentification2.isThereALogoOnTopLeftCorner(url2, inputStream2);		
+		assertEquals("StackOverflow", result2);	
+	}	
 
 }

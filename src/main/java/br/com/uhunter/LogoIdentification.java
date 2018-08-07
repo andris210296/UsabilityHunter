@@ -15,12 +15,12 @@ public class LogoIdentification {
 	private String pageTitle;
 	
 	
-	public boolean isThereALogoOnTopLeftCorner(String url, InputStream inputStream) throws Exception {
+	public String isThereALogoOnTopLeftCorner(String url, InputStream inputStream) throws Exception {
 		
 		List<String> logos = GoogleVision.detectLogo(inputStream);
 		setPageTitle(getWebPageTitleFromHtml(url));
 		
-		return isStringInsideOfTheTitle(logos) != null;
+		return isStringInsideOfTheTitle(logos);
 	}
 
 	public String isStringInsideOfTheTitle(List<String> strings) {

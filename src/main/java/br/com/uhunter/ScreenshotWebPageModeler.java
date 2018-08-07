@@ -18,7 +18,9 @@ public class ScreenshotWebPageModeler {
 	private int verticalPieces = 0;
 	
 	private String url;
+	private BufferedImage bufferedImage;
 	private InputStream imputStream;
+	private InputStream[][] imputStreamMatrix;
 	
 	private List<String> apiKeys = new ArrayList<String>() {{
 		add("ak-6qkw8-fcb6p-s0asj-tzb5b-yv1qa");
@@ -31,6 +33,11 @@ public class ScreenshotWebPageModeler {
 	public ScreenshotWebPageModeler(String url) throws Exception {
 		setUrl(url);
 		setImputStream(takeScreenshot(getUrl()));
+		
+		setBufferedImage(ImageUtils.inputStreamToBufferedImage(getImputStream()));
+		setQuantityOfPieces(getBufferedImage());
+		
+		setImputStreamMatrix(bufferedMatrixToInputStreamMatrix((getImagePieces())));
 	}
 	
 	public ScreenshotWebPageModeler() {
@@ -84,8 +91,8 @@ public class ScreenshotWebPageModeler {
 	 * @throws Exception
 	 */
 	public BufferedImage[][] getImagePieces() throws Exception {
-
-		BufferedImage bfImage = ImageUtils.inputStreamToBufferedImage(getImputStream());
+		
+		BufferedImage bfImage = getBufferedImage();
 
 		BufferedImage cut = null;
 
@@ -113,6 +120,21 @@ public class ScreenshotWebPageModeler {
 		v = 0;
 
 		return imagePieces;
+	}
+	
+	public InputStream[][] bufferedMatrixToInputStreamMatrix(BufferedImage[][] bufferedImages) throws Exception {
+		InputStream[][] byteString = new InputStream[getVerticalPieces()][getHorizontalPieces()];
+
+		for (int v = 0; v < getVerticalPieces(); v++) {
+			for (int h = 0; h < getHorizontalPieces(); h++) {
+				byteString[v][h] = ImageUtils.bufferedImageToInputStream(bufferedImages[v][h]);	
+			}
+		}
+		return byteString;
+	}
+	
+	public InputStream getImagePiece(int v, int h) {
+		return getImputStreamMatrix()[v][h];
 	}
 
 	public void setHorizontalPieces(int horizontalPieces) {
@@ -144,5 +166,21 @@ public class ScreenshotWebPageModeler {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+	
+	public InputStream[][] getImputStreamMatrix() {
+		return imputStreamMatrix;
+	}
 
+	public void setImputStreamMatrix(InputStream[][] imputStreamMatrix) {
+		this.imputStreamMatrix = imputStreamMatrix;
+	}
+
+	public BufferedImage getBufferedImage() {
+		return bufferedImage;
+	}
+
+	public void setBufferedImage(BufferedImage bufferedImage) {
+		this.bufferedImage = bufferedImage;
+	}
+	
 }

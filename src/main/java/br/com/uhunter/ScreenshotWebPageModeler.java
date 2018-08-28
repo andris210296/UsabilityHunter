@@ -48,32 +48,33 @@ public class ScreenshotWebPageModeler {
 
 	public InputStream takeScreenshot(String url) throws Exception {
 
-		Random rand = new Random();
-
-		HttpTransport httpTransport = new NetHttpTransport();
-		HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
-		String apiUrl = String.format("http://PhantomJsCloud.com/api/browser/v2/%s/",
-				apiKeys.get(rand.nextInt(apiKeys.size() - 1)));
-
-		GenericUrl urlApi = new GenericUrl(apiUrl);
-
-		JSONObject json = new JSONObject();
-		json.put("url", url);
-		json.put("renderType", "jpg");
-		json.put("outputAsJson:false", false);
-		String requestBody = json.toString();
-
-		HttpRequest request = requestFactory.buildPostRequest(urlApi,
-				ByteArrayContent.fromString("application/json", requestBody));
-		
 		HttpResponse httpResponse;
 
 		while (true) {
 			try {
 
+				Random rand = new Random();
+
+				HttpTransport httpTransport = new NetHttpTransport();
+				HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
+				String apiUrl = String.format("http://PhantomJsCloud.com/api/browser/v2/%s/",
+						apiKeys.get(rand.nextInt(apiKeys.size() - 1)));
+
+				GenericUrl urlApi = new GenericUrl(apiUrl);
+
+				JSONObject json = new JSONObject();
+				json.put("url", url);
+				json.put("renderType", "jpg");
+				json.put("outputAsJson:false", false);
+				String requestBody = json.toString();
+
+				HttpRequest request = requestFactory
+						.buildPostRequest(urlApi, ByteArrayContent.fromString("application/json", requestBody))
+						.setConnectTimeout(3 * 60000).setReadTimeout(3 * 60000);
+
 				httpResponse = request.execute();
 				break;
-				
+
 			} catch (SocketTimeoutException e) {
 				System.err.println("SocketTimeoutException :" + e.getMessage());
 				continue;

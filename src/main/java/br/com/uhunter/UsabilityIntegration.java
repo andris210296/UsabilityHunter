@@ -1,7 +1,11 @@
 package br.com.uhunter;
 
+import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.InputStream;
+import java.io.*;
+import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.json.JSONObject;
 
@@ -44,6 +48,48 @@ public class UsabilityIntegration {
 
 		return json;
 	}
+	
+	public JSONObject doNavigationOnLeftCornerTest() {
+		JSONObject json = new JSONObject();
+		
+		try {
+						
+			ImageUtils.inputStreamToFile(screenshotWebPageModeler.getImagePiece(0,0));
+			
+			File file = new File("imgTest/image.jpg");
+			BufferedImage bufferedImage = ImageIO.read(file);
+			
+			InputStream inputStream = new FileInputStream(file);
+						
+			NavigationOnLeft navigationOnLeft = new NavigationOnLeft(inputStream, bufferedImage, url);
+			boolean responseNavigationOnTheLeftSide = navigationOnLeft.isTheNavigationOnTheLeftSide();
+			
+			if(responseNavigationOnTheLeftSide) {
+				json.put("navigationOnLeftCorner", true);
+				
+				if(navigationOnLeft.getQuantityOfItemsOnMiddleLeft() >= 5) {
+					if(navigationOnLeft.areThereEnoughItemsOnAlphabeticalOrder()) {						
+						json.put("hicksLaw", true);	
+					}
+					else {
+						json.put("hicksLaw", false);							
+					}
+				}
+				else {
+					json.put("hicksLaw", "not applicable");					
+				}
+			}else {
+				
+				json.put("navigationOnLeftCorner", false);
+				json.put("hicksLaw", "not applicable");
+			}
+			
+			
+		}catch (Exception e) {
+			json.put("navigationOnLeftCorner", e.getStackTrace());
+		}
+		return json;
+	}
 
 	public String getUrl() {
 		return url;
@@ -59,6 +105,6 @@ public class UsabilityIntegration {
 
 	public void setWebPageScreenshotMatrix(BufferedImage[][] webPageScreenshotMatrix) {
 		this.webPageScreenshotMatrix = webPageScreenshotMatrix;
-	}
+	}	
 
 }

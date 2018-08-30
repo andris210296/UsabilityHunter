@@ -185,6 +185,20 @@
 			<version>20180130</version>
 		</dependency>
 
+		<dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>ij</artifactId>
+			<version>1.52e</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>ij</artifactId>
+			<version>1.51h</version>
+		</dependency>
+
+
+
 	</dependencies>
 </project>
 

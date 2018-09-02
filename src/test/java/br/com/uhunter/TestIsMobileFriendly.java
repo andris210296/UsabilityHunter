@@ -2,6 +2,11 @@ package br.com.uhunter;
 
 import org.junit.Test;
 
+import com.google.api.services.searchconsole.v1.SearchConsole.UrlTestingTools.MobileFriendlyTest;
+import com.google.api.services.searchconsole.v1.model.RunMobileFriendlyTestRequest;
+
+import br.com.uhunter.IsMobileFriendly.IssuesEnum;
+
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -24,7 +29,7 @@ public class TestIsMobileFriendly {
 		assertEquals(new ArrayList<>(), isMobileFriendlyResult1.getListOfIssues());
 				
 		
-		String url2 = "https://www.vestibularfatec.com.br/home/";
+		String url2 = "";
 
 		IsMobileFriendly isMobileFriendlyExpected2 = mock(IsMobileFriendly.class);
 		when(isMobileFriendlyExpected2.getResult()).thenReturn(false);
@@ -83,5 +88,39 @@ public class TestIsMobileFriendly {
 
 		assertEquals(isMobileFriendlyExpected2.getListOfIssues(), isMobileFriendlyResult2.getListOfIssues());
 
+	}
+	
+	@Test
+	public void TestIssueListExplanation() throws Exception {		
+	
+		List<String> listOfIssuesExplained = new ArrayList<>();
+		listOfIssuesExplained.add("Plugins incompatible with mobile devices are being used.");
+		listOfIssuesExplained.add("Viewport is not specified using the meta viewport tag.");
+		listOfIssuesExplained.add("Viewport defined to a fixed width.");
+		listOfIssuesExplained.add("Viewport defined to a fixed width");
+		listOfIssuesExplained.add("Content not sized to viewport.");
+		listOfIssuesExplained.add("Font size is too small for easy reading on a small screen.");
+		listOfIssuesExplained.add("Touch elements are too close to each other.");
+		
+				
+		List<String> listOfIssues = new ArrayList<>();
+		listOfIssues.add("MOBILE_FRIENDLY_RULE_UNSPECIFIED");
+		listOfIssues.add("USES_INCOMPATIBLE_PLUGINS");
+		listOfIssues.add("CONFIGURE_VIEWPORT");
+		listOfIssues.add("FIXED_WIDTH_VIEWPORT");
+		listOfIssues.add("SIZE_CONTENT_TO_VIEWPORT");
+		listOfIssues.add("USE_LEGIBLE_FONT_SIZES");
+		listOfIssues.add("TAP_TARGETS_TOO_CLOSE");
+		
+		IsMobileFriendly isMobileFriendlyResult1 = new IsMobileFriendly();
+		isMobileFriendlyResult1.setListOfIssues(listOfIssues);
+		isMobileFriendlyResult1.setListOfIssuesExplained();		
+		
+		List<String> result1 = isMobileFriendlyResult1.getListOfIssuesExplained();
+		
+		for (String issueResult : result1) {					
+			assertTrue(listOfIssuesExplained.contains(issueResult));
+		}
+		
 	}
 }

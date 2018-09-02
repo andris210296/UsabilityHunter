@@ -1,8 +1,6 @@
 package br.com.uhunter;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.json.JSONObject;
 
@@ -17,12 +15,14 @@ public class IsMobileFriendly {
 	private static final String MOBILE_FRIENDLY = "MOBILE_FRIENDLY";
 	
 	private List<String> listOfIssues = new ArrayList<>();
+	private Map<String, String> listOfIssuesExplained = new HashMap<String, String>();
 	
 	private boolean result;
 
 	public IsMobileFriendly(String url) throws Exception {
 		String response = doTest(url);
 		httpResulToJson(response);
+		setListOfIssuesExplained();
 	}
 	
 	public IsMobileFriendly() {
@@ -59,6 +59,17 @@ public class IsMobileFriendly {
 			listOfIssues.add(element.get("rule").getAsString());
 		}		
 	}
+	
+	public void setListOfIssuesExplained() {
+		Map<String, String> listOfIssuesExplained = new HashMap<>();
+		
+		if(!getListOfIssues().isEmpty()) {
+			for (String issue : listOfIssues) {
+				listOfIssuesExplained.put(IssuesEnum.valueOf(issue).toString(), IssuesEnum.valueOf(issue).getValue());
+			}
+		}
+		this.listOfIssuesExplained = listOfIssuesExplained;
+	}
 
 	public boolean getResult() {
 		return result;
@@ -70,6 +81,36 @@ public class IsMobileFriendly {
 	
 	public List<String> getListOfIssues() {
 		return listOfIssues;
+	}
+	
+	public void setListOfIssues(List<String> list) {
+		this.listOfIssues = list;
+	}
+	
+	public Map<String, String> getListOfIssuesExplained() {
+		return listOfIssuesExplained;
+	}
+	
+	public enum IssuesEnum{
+		
+		MOBILE_FRIENDLY_RULE_UNSPECIFIED("Plugins incompatible with mobile devices are being used."),
+		USES_INCOMPATIBLE_PLUGINS("Viewport is not specified using the meta viewport tag."),
+		CONFIGURE_VIEWPORT("Viewport defined to a fixed width."),
+		FIXED_WIDTH_VIEWPORT("Viewport defined to a fixed width"),
+		SIZE_CONTENT_TO_VIEWPORT("Content not sized to viewport."),
+		USE_LEGIBLE_FONT_SIZES("Font size is too small for easy reading on a small screen."),
+		TAP_TARGETS_TOO_CLOSE("Touch elements are too close to each other.");
+		
+		public String issue;
+		
+		IssuesEnum(String value){
+			issue = value;
+		}
+		
+		public String getValue() {
+			return issue;
+		}
+		
 	}
 
 }

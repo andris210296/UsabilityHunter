@@ -30,7 +30,7 @@ public class UsabilityIntegration {
 		try {
 
 			LogoIdentification logoIdentification = new LogoIdentification();
-			InputStream inputStream = screenshotWebPageModeler.getImagePiece(0,0);
+			InputStream inputStream = screenshotWebPageModeler.getImagePiece(0, 0);
 			String logo = logoIdentification.isThereALogoOnTopLeftCorner(getUrl(), inputStream);
 
 			if (logo != null) {
@@ -48,46 +48,65 @@ public class UsabilityIntegration {
 
 		return json;
 	}
-	
+
 	public JSONObject doNavigationOnLeftCornerTest() {
 		JSONObject json = new JSONObject();
-		
+
 		try {
-						
-			ImageUtils.inputStreamToFile(screenshotWebPageModeler.getImagePiece(0,0));
-			
+
+			ImageUtils.inputStreamToFile(screenshotWebPageModeler.getImagePiece(0, 0));
+
 			File file = new File("imgTest/image.jpg");
 			BufferedImage bufferedImage = ImageIO.read(file);
-			
+
 			InputStream inputStream = new FileInputStream(file);
-						
+
 			NavigationOnLeft navigationOnLeft = new NavigationOnLeft(inputStream, bufferedImage, url);
 			boolean responseNavigationOnTheLeftSide = navigationOnLeft.isTheNavigationOnTheLeftSide();
-			
-			if(responseNavigationOnTheLeftSide) {
+
+			if (responseNavigationOnTheLeftSide) {
 				json.put("navigationOnLeftCorner", true);
-				
-				if(navigationOnLeft.getQuantityOfItemsOnMiddleLeft() >= 5) {
-					if(navigationOnLeft.areThereEnoughItemsOnAlphabeticalOrder()) {						
-						json.put("hicksLaw", true);	
+
+				if (navigationOnLeft.getQuantityOfItemsOnMiddleLeft() >= 5) {
+					if (navigationOnLeft.areThereEnoughItemsOnAlphabeticalOrder()) {
+						json.put("hicksLaw", true);
+					} else {
+						json.put("hicksLaw", false);
 					}
-					else {
-						json.put("hicksLaw", false);							
-					}
+				} else {
+					json.put("hicksLaw", "not applicable");
 				}
-				else {
-					json.put("hicksLaw", "not applicable");					
-				}
-			}else {
-				
+			} else {
+
 				json.put("navigationOnLeftCorner", false);
 				json.put("hicksLaw", "not applicable");
 			}
-			
-			
-		}catch (Exception e) {
+
+		} catch (Exception e) {
 			json.put("navigationOnLeftCorner", e.getStackTrace());
 		}
+		return json;
+	}
+
+	public JSONObject doIsMobileFriendlyTest() {
+		JSONObject json = new JSONObject();
+
+		try {
+			IsMobileFriendly isMobileFriendly = new IsMobileFriendly(getUrl());
+			if (isMobileFriendly.getResult()) {
+				
+				json.put("isMobileFriendly", true);
+				
+			} else {
+				
+				json.put("isMobileFriendly", false);
+				json.put("listOfIssues", isMobileFriendly.getListOfIssuesExplained());
+			}
+
+		} catch (Exception e) {
+			json.put("isMobileFriendly", e.getStackTrace());
+		}
+
 		return json;
 	}
 
@@ -105,6 +124,6 @@ public class UsabilityIntegration {
 
 	public void setWebPageScreenshotMatrix(BufferedImage[][] webPageScreenshotMatrix) {
 		this.webPageScreenshotMatrix = webPageScreenshotMatrix;
-	}	
+	}
 
 }

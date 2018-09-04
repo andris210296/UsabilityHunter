@@ -93,16 +93,15 @@ public class TestIsMobileFriendly {
 	@Test
 	public void TestIssueListExplanation() throws Exception {		
 	
-		List<String> listOfIssuesExplained = new ArrayList<>();
-		listOfIssuesExplained.add("Plugins incompatible with mobile devices are being used.");
-		listOfIssuesExplained.add("Viewport is not specified using the meta viewport tag.");
-		listOfIssuesExplained.add("Viewport defined to a fixed width.");
-		listOfIssuesExplained.add("Viewport defined to a fixed width");
-		listOfIssuesExplained.add("Content not sized to viewport.");
-		listOfIssuesExplained.add("Font size is too small for easy reading on a small screen.");
-		listOfIssuesExplained.add("Touch elements are too close to each other.");
-		
-				
+		Map<String,String> listOfIssuesExplained = new HashMap<>();
+		listOfIssuesExplained.put(IssuesEnum.MOBILE_FRIENDLY_RULE_UNSPECIFIED.toString(), IssuesEnum.MOBILE_FRIENDLY_RULE_UNSPECIFIED.getValue());
+		listOfIssuesExplained.put(IssuesEnum.USES_INCOMPATIBLE_PLUGINS.toString(), IssuesEnum.USES_INCOMPATIBLE_PLUGINS.getValue());
+		listOfIssuesExplained.put(IssuesEnum.CONFIGURE_VIEWPORT.toString(), IssuesEnum.CONFIGURE_VIEWPORT.getValue());
+		listOfIssuesExplained.put(IssuesEnum.FIXED_WIDTH_VIEWPORT.toString(), IssuesEnum.FIXED_WIDTH_VIEWPORT.getValue());
+		listOfIssuesExplained.put(IssuesEnum.SIZE_CONTENT_TO_VIEWPORT.toString(), IssuesEnum.SIZE_CONTENT_TO_VIEWPORT.getValue());
+		listOfIssuesExplained.put(IssuesEnum.USE_LEGIBLE_FONT_SIZES.toString(), IssuesEnum.USE_LEGIBLE_FONT_SIZES.getValue());
+		listOfIssuesExplained.put(IssuesEnum.TAP_TARGETS_TOO_CLOSE.toString(), IssuesEnum.TAP_TARGETS_TOO_CLOSE.getValue());
+						
 		List<String> listOfIssues = new ArrayList<>();
 		listOfIssues.add("MOBILE_FRIENDLY_RULE_UNSPECIFIED");
 		listOfIssues.add("USES_INCOMPATIBLE_PLUGINS");
@@ -116,10 +115,10 @@ public class TestIsMobileFriendly {
 		isMobileFriendlyResult1.setListOfIssues(listOfIssues);
 		isMobileFriendlyResult1.setListOfIssuesExplained();		
 		
-		List<String> result1 = isMobileFriendlyResult1.getListOfIssuesExplained();
+		Map<String, String> result1 = isMobileFriendlyResult1.getListOfIssuesExplained();
 		
-		for (String issueResult : result1) {					
-			assertTrue(listOfIssuesExplained.contains(issueResult));
+		for (String issueResult : result1.keySet()) {					
+			assertTrue(listOfIssues.contains(issueResult));
 		}
 		
 	}

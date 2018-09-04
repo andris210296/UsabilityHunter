@@ -28,6 +28,7 @@ public class ScreenshotWebPageModeler {
 			add("ak-6qkw8-fcb6p-s0asj-tzb5b-yv1qa");
 			add("ak-c57am-7waaf-yrbn0-zbm79-8fycw");
 			add("ak-qy3qb-j4fnn-p97q0-qj101-x5vxj");
+			add("ak-pnh0r-7008b-mnrc6-r7a6v-qqx2v");
 			add("ak-jd5q0-s7sr1-6cg2x-xb4jb-7zkwn");
 			add("ak-chzzw-d56fs-dg8qf-ezdzp-27kmn");
 		}

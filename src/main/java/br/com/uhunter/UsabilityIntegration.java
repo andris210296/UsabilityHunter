@@ -3,7 +3,7 @@ package br.com.uhunter;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.List;
+import java.util.*;
 
 import javax.imageio.ImageIO;
 
@@ -23,9 +23,8 @@ public class UsabilityIntegration {
 		setWebPageScreenshotMatrix(screenshotWebPageModeler.getImagePieces());
 	}
 
-	public JSONObject doLogoTest() {
-
-		JSONObject json = new JSONObject();
+	public Map<String, String> doLogoTest() {
+		Map<String, String> map = new HashMap<>();
 
 		try {
 
@@ -34,23 +33,23 @@ public class UsabilityIntegration {
 			String logo = logoIdentification.isThereALogoOnTopLeftCorner(getUrl(), inputStream);
 
 			if (logo != null) {
-				json.put("logoName", logo);
-				json.put("result", true);
+				map.put(JsonValues.LOGO_NAME.getValue(), logo);
+				map.put(JsonValues.RESULT.getValue(), String.valueOf(true));
 			} else {
 				throw new Exception();
 			}
 
 		} catch (Exception e) {
-			json.put("logoName", e.getMessage());
-			json.put("result", false);
+			map.put(JsonValues.LOGO_NAME.getValue(), e.getMessage());
+			map.put(JsonValues.RESULT.getValue(), String.valueOf(false));
 
 		}
 
-		return json;
+		return map;
 	}
 
-	public JSONObject doNavigationOnLeftCornerTest() {
-		JSONObject json = new JSONObject();
+	public Map<String, String> doNavigationOnLeftCornerTest() {
+		Map<String, String> map = new HashMap<>();
 
 		try {
 
@@ -65,49 +64,57 @@ public class UsabilityIntegration {
 			boolean responseNavigationOnTheLeftSide = navigationOnLeft.isTheNavigationOnTheLeftSide();
 
 			if (responseNavigationOnTheLeftSide) {
-				json.put("navigationOnLeftCorner", true);
+				map.put(JsonValues.NAVIGATION_ON_LEFT_CORNER.getValue(), String.valueOf(true));
 
 				if (navigationOnLeft.getQuantityOfItemsOnMiddleLeft() >= 5) {
 					if (navigationOnLeft.areThereEnoughItemsOnAlphabeticalOrder()) {
-						json.put("hicksLaw", true);
+						map.put(JsonValues.HICKSLAW.getValue(), String.valueOf(true));
 					} else {
-						json.put("hicksLaw", false);
+						map.put(JsonValues.HICKSLAW.getValue(), String.valueOf(false));
 					}
 				} else {
-					json.put("hicksLaw", "not applicable");
+					map.put(JsonValues.HICKSLAW.getValue(), JsonValues.NOT_APPLICABLE.getValue());
 				}
 			} else {
 
-				json.put("navigationOnLeftCorner", false);
-				json.put("hicksLaw", "not applicable");
+				map.put(JsonValues.NAVIGATION_ON_LEFT_CORNER.getValue(), String.valueOf(false));
+				map.put(JsonValues.HICKSLAW.getValue(), JsonValues.NOT_APPLICABLE.getValue());
 			}
 
 		} catch (Exception e) {
-			json.put("navigationOnLeftCorner", e.getStackTrace());
+			map.put(JsonValues.NAVIGATION_ON_LEFT_CORNER.getValue(), e.getStackTrace().toString());
 		}
-		return json;
+		return map;
 	}
 
-	public JSONObject doIsMobileFriendlyTest() {
-		JSONObject json = new JSONObject();
+	public List<Map> doIsMobileFriendlyTest() {
+		
+		List<Map> map = new ArrayList<>();
+		Map<String, String> mapValue = new HashMap<>();
+		Map<String, Map<String, String>> mapIssues = new HashMap<>();
 
 		try {
 			IsMobileFriendly isMobileFriendly = new IsMobileFriendly(getUrl());
 			if (isMobileFriendly.getResult()) {
 				
-				json.put("isMobileFriendly", true);
+				mapValue.put(JsonValues.IS_MOBILE_FRIENDLY.getValue(), String.valueOf(true));
+				map.add(mapValue);
 				
 			} else {
 				
-				json.put("isMobileFriendly", false);
-				json.put("listOfIssues", isMobileFriendly.getListOfIssuesExplained());
+				mapValue.put(JsonValues.IS_MOBILE_FRIENDLY.getValue(), String.valueOf(false));
+				mapIssues.put(JsonValues.LIST_OF_ISSUES.getValue(), isMobileFriendly.getListOfIssuesExplained());
+				map.add(mapValue);
+				map.add(mapIssues);
 			}
 
 		} catch (Exception e) {
-			json.put("isMobileFriendly", e.getStackTrace());
-		}
+			mapValue.put(JsonValues.IS_MOBILE_FRIENDLY.getValue(), e.getStackTrace().toString());
+			map.add(mapValue);
+		}		
+		
 
-		return json;
+		return map;
 	}
 
 	public String getUrl() {

@@ -7,11 +7,13 @@ public enum JsonValues {
 	
 	RESULT("result"),
 	
+	NAVIGATION_ON_LEFT_CORNER_TEST("navigationOnLeftCornerTest"),
 	NAVIGATION_ON_LEFT_CORNER("navigationOnLeftCorner"),
 	HICKSLAW("hicksLaw"),
 	
 	NOT_APPLICABLE("not applicable"),
 	
+	IS_MOBILE_FRIENDLY_TEST("isMobileFriendlyTest"),
 	IS_MOBILE_FRIENDLY("isMobileFriendly"),
 	LIST_OF_ISSUES("listOfIssues");
 	

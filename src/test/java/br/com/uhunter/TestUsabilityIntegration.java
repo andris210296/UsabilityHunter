@@ -8,7 +8,9 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.uhunter.IsMobileFriendly.IssuesEnum;
+import br.com.uhunter.responsive.IsMobileFriendly.IssuesEnum;
+import br.com.uhunter.rest.UsabilityIntegration;
+import br.com.uhunter.utils.JsonValues;
 
 public class TestUsabilityIntegration {
 	

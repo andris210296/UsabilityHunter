@@ -5,7 +5,8 @@ import org.junit.Test;
 import com.google.api.services.searchconsole.v1.SearchConsole.UrlTestingTools.MobileFriendlyTest;
 import com.google.api.services.searchconsole.v1.model.RunMobileFriendlyTestRequest;
 
-import br.com.uhunter.IsMobileFriendly.IssuesEnum;
+import br.com.uhunter.responsive.IsMobileFriendly;
+import br.com.uhunter.responsive.IsMobileFriendly.IssuesEnum;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package br.com.uhunter;
+package br.com.uhunter.logo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +9,8 @@ import java.util.List;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+
+import br.com.uhunter.utils.GoogleVision;
 
 public class LogoIdentification {
 

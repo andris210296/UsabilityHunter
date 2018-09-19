@@ -11,6 +11,8 @@ import org.junit.Test;
 
 import com.google.cloud.vision.v1.Vertex;
 
+import br.com.uhunter.utils.GoogleVision;
+import br.com.uhunter.utils.ImageUtils;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.io.*;

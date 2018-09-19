@@ -1,4 +1,4 @@
-package br.com.uhunter;
+package br.com.uhunter.rest;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -8,6 +8,11 @@ import java.util.*;
 import javax.imageio.ImageIO;
 
 import org.json.JSONObject;
+
+import br.com.uhunter.logo.LogoIdentification;
+import br.com.uhunter.navigation.NavigationOnLeft;
+import br.com.uhunter.responsive.IsMobileFriendly;
+import br.com.uhunter.utils.*;
 
 public class UsabilityIntegration {
 

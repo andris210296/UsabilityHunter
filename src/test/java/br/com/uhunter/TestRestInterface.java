@@ -7,6 +7,9 @@ import java.util.*;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import br.com.uhunter.rest.RestInterfaceImpl;
+import br.com.uhunter.utils.JsonValues;
+
 public class TestRestInterface {
 	
 	private static final String URL_1 = "https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal";

@@ -1,9 +1,11 @@
-package br.com.uhunter;
+package br.com.uhunter.rest;
 
 import org.json.JSONObject;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import br.com.uhunter.utils.JsonValues;
 
 import java.lang.reflect.Type;
 import java.util.Map;

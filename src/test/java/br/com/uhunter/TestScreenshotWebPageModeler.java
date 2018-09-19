@@ -13,6 +13,10 @@ import javax.imageio.ImageIO;
 
 import org.junit.Test;
 
+import br.com.uhunter.logo.LogoIdentification;
+import br.com.uhunter.utils.ImageUtils;
+import br.com.uhunter.utils.ScreenshotWebPageModeler;
+
 public class TestScreenshotWebPageModeler {
 
 	@Test

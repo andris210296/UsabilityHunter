@@ -9,6 +9,9 @@ import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import br.com.uhunter.logo.LogoIdentification;
+import br.com.uhunter.utils.GoogleVision;
+
 public class TestLogoOnTopLeftCorner {
 
 	@Test

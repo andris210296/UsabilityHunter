@@ -18,6 +18,11 @@ import org.openqa.selenium.WebDriver.Navigation;
 
 import com.google.cloud.vision.v1.Vertex;
 
+import br.com.uhunter.navigation.NavigationOnLeft;
+import br.com.uhunter.navigation.ParagraphText;
+import br.com.uhunter.utils.GoogleVision;
+import br.com.uhunter.utils.ImageUtils;
+
 public class TestNavigationOnLeft {
 
 	private static final String URL_1 = "https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal";

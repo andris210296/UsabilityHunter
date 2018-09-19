@@ -1,4 +1,4 @@
-package br.com.uhunter;
+package br.com.uhunter.utils;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.RasterFormatException;

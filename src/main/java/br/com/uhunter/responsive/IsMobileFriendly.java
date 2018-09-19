@@ -1,4 +1,4 @@
-package br.com.uhunter;
+package br.com.uhunter.responsive;
 
 import java.util.*;
 

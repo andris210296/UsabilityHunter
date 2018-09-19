@@ -1,4 +1,4 @@
-package br.com.uhunter;
+package br.com.uhunter.navigation;
 
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -11,6 +11,8 @@ import java.util.*;
 
 import com.google.cloud.vision.v1.Vertex;
 
+import br.com.uhunter.utils.GoogleVision;
+import br.com.uhunter.utils.ImageUtils;
 import net.bytebuddy.dynamic.scaffold.MethodGraph.NodeList;
 
 public class NavigationOnLeft {

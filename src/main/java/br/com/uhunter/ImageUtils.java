@@ -41,12 +41,17 @@ public class ImageUtils {
 									vertexes.get(0).getY() - 1, widthCut, heightCut - 1));
 						} catch (RasterFormatException e5) {
 							try {
-							return bufferedImageToInputStream(bfImage.getSubimage(vertexes.get(0).getX() - 2,
-									vertexes.get(0).getY() - 1, widthCut - 2, heightCut - 1));
+								return bufferedImageToInputStream(bfImage.getSubimage(vertexes.get(0).getX() - 2,
+										vertexes.get(0).getY() - 1, widthCut - 2, heightCut - 1));
 							} catch (RasterFormatException e6) {
-								return bufferedImageToInputStream(bfImage.getSubimage(vertexes.get(0).getX(),
-										vertexes.get(0).getY() + 1, widthCut, heightCut + 1));
-								
+								try {
+									return bufferedImageToInputStream(bfImage.getSubimage(vertexes.get(0).getX(),
+											vertexes.get(0).getY() + 1, widthCut, heightCut + 1));
+								} catch (RasterFormatException e7) {
+									return bufferedImageToInputStream(bfImage.getSubimage(vertexes.get(0).getX() - 3,
+											vertexes.get(0).getY(), widthCut - 3, heightCut));
+								}
+
 							}
 						}
 					}

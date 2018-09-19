@@ -151,6 +151,23 @@ public class TestImageUtils {
 			assertTrue(result5.contains(string));
 		}
 		
+		List<String> strings6 = new ArrayList<>();
+		strings6.add("A Wikipédia em Lingua Portugues");
+		
+		List<Vertex> vertexes6 = new ArrayList<>();
+		vertexes6.add(Vertex.newBuilder().setX(442).setY(227).build());
+		vertexes6.add(Vertex.newBuilder().setX(689).setY(225).build());
+		vertexes6.add(Vertex.newBuilder().setX(689).setY(244).build());
+		vertexes6.add(Vertex.newBuilder().setX(442).setY(246).build());
+		
+		InputStream inputStreamPiece6 = ImageUtils.getPiece(ImageUtils.inputStreamToBufferedImage(new FileInputStream("imgTest/wikiImage.jpg")), vertexes6);
+		
+		List<String> result6 = GoogleVision.detectText(inputStreamPiece6);
+		
+		for (String string : strings6) {
+			assertTrue(result6.contains(string));
+		}
+		
 	}
 
 }

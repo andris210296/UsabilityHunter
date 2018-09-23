@@ -8,9 +8,11 @@ import com.google.api.client.http.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.gson.*;
 
+import br.com.uhunter.utils.JsonValues;
+
 public class IsMobileFriendly {
 	
-	private static final String API_URL = "https://searchconsole.googleapis.com/v1/urlTestingTools/mobileFriendlyTest:run?key=AIzaSyC4AqjLD8DJsxBnPkQTjAcGHqG7B0XI5HE";
+	private static final String API_URL = "https://searchconsole.googleapis.com/v1/urlTestingTools/mobileFriendlyTest:run?key=" + JsonValues.API_KEY.getValue();
 	
 	private static final String MOBILE_FRIENDLY = "MOBILE_FRIENDLY";
 	

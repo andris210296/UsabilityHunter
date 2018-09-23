@@ -2,6 +2,8 @@ package br.com.uhunter.utils;
 
 public enum JsonValues {
 	
+	API_KEY("AIzaSyC4AqjLD8DJsxBnPkQTjAcGHqG7B0XI5HE"),
+	
 	LOGO_ON_TOP_LEFT("logoOnTopLeft"),
 	LOGO_NAME("logoName"),
 	
@@ -17,7 +19,7 @@ public enum JsonValues {
 	IS_MOBILE_FRIENDLY("isMobileFriendly"),
 	LIST_OF_ISSUES("listOfIssues");
 	
-	public String value;
+	private String value;
 	
 	JsonValues(String value){
 		this.value = value;

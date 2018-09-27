@@ -1,6 +1,7 @@
 package br.com.uhunter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.*;
 
@@ -24,6 +25,7 @@ public class TestRestInterface {
 		jsonExpected1.put(JsonValues.LOGO_ON_TOP_LEFT.getValue(), logoIdentification(true, URL_1));
 		jsonExpected1.put(JsonValues.NAVIGATION_ON_LEFT_CORNER_TEST.getValue(), populateNavigationMap(true, String.valueOf(false)));
 		jsonExpected1.put(JsonValues.IS_MOBILE_FRIENDLY_TEST.getValue(), populateIsMobileFriendlyMap(true, new HashMap()));
+		jsonExpected1.put(JsonValues.PERFORMANCE_TEST.getValue(), populatePerformanceTestMap());
 		
 		JSONObject url1 = new JSONObject();
 		url1.put("url",URL_1);
@@ -31,7 +33,7 @@ public class TestRestInterface {
 		RestInterfaceImpl usabilityRestImpl1 = new RestInterfaceImpl();
 		String result1 =  usabilityRestImpl1.setTest(url1.toString());
 		
-		assertEquals(jsonExpected1.toString(), result1);
+		assertTrue(result1.contains(jsonExpected1.toString()));
 	}
 
 	private Map<String, String> logoIdentification(boolean result, String url) {
@@ -62,6 +64,13 @@ public class TestRestInterface {
 		}
 		
         return maps;
+	}
+	
+	private Map<String, Object> populatePerformanceTestMap(){
+		Map<String, Object> map = new HashMap<>();
+		
+		
+		return map;
 	}
 
 }

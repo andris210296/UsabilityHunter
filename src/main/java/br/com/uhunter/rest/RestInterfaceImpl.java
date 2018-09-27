@@ -43,6 +43,7 @@ public class RestInterfaceImpl  {
 			jsonObject.put(JsonValues.LOGO_ON_TOP_LEFT.getValue(), usabilityIntegration.doLogoTest());
 			jsonObject.put(JsonValues.NAVIGATION_ON_LEFT_CORNER_TEST.getValue(), usabilityIntegration.doNavigationOnLeftCornerTest());
 			jsonObject.put(JsonValues.IS_MOBILE_FRIENDLY_TEST.getValue(), usabilityIntegration.doIsMobileFriendlyTest());
+			jsonObject.put(JsonValues.PERFORMANCE_TEST.getValue(), usabilityIntegration.doPerformanceTest());
 			
 			
 			return jsonObject.toString();

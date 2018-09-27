@@ -1,21 +1,81 @@
 package br.com.uhunter.performance;
 
-import java.util.List;
-import java.util.Map;
-
 public class PerformanceMetric {
 	
-	private String type;
-	private int median;
-	private List<Map<String, Double>> distributions;
-	private String category;
+	private PerformanceMetricValues type;
+	private String description;
+	private Integer pageSpeedMetric;
+	private Double fast;
+	private Double average;
+	private Double slow;
+	private String overallMetric;
 	
+	public PerformanceMetric() {
+		
+	}
+	
+	public PerformanceMetricValues getType() {
+		return type;
+	}
+
+	public void setType(PerformanceMetricValues firstContentfulPaintMs) {
+		this.type = firstContentfulPaintMs;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+		
+	public Integer getPageSpeedMetric() {
+		return pageSpeedMetric;
+	}
+
+	public void setPageSpeedMetric(Integer pageSpeedMetric) {
+		this.pageSpeedMetric = pageSpeedMetric;
+	}
+
+	public Double getFast() {
+		return fast;
+	}
+
+	public void setFast(Double fast) {
+		this.fast = fast;
+	}
+
+	public Double getAverage() {
+		return average;
+	}
+
+	public void setAverage(Double average) {
+		this.average = average;
+	}
+
+	public Double getSlow() {
+		return slow;
+	}
+
+	public void setSlow(Double slow) {
+		this.slow = slow;
+	}
+
+	public String getOverallMetric() {
+		return overallMetric;
+	}
+
+	public void setOverallMetric(String overallMetric) {
+		this.overallMetric = overallMetric;
+	}
+
 	public enum PerformanceMetricValues {
 		
 		LOADING_EXPERIENCE("loadingExperience"),
 		METRICS("metrics"),
 		
-		FIRST_CONTENTFUL_PAINT("FIRST_CONTENTFUL_PAINT_MS"),		
+		FIRST_CONTENTFUL_PAINT_MS("FIRST_CONTENTFUL_PAINT_MS - Description for this type of test"),
 		MEDIAN("median"),
 		DISTRIBUTIONS("distributions"),
 		CATEGORY("category"),		
@@ -24,7 +84,7 @@ public class PerformanceMetric {
 		MAX("max"),
 		PROPORTION("proportion"),
 		
-		DOM_CONTENT_LOADED_EVENT_FIRED_MS("DOM_CONTENT_LOADED_EVENT_FIRED_MS"),
+		DOM_CONTENT_LOADED_EVENT_FIRED_MS("DOM_CONTENT_LOADED_EVENT_FIRED_MS - Description for this type of test"),
 		
 		OVERALL_CATEGORY("overall_category"), 
 		
@@ -43,37 +103,5 @@ public class PerformanceMetric {
 		}
 
 	}
-
-	public void setType(String type) {
-		this.type = type;		
-	}
 	
-	public String getType() {
-		return type;
-	}
-
-	public void setMedian(int median) {
-        this.median = median;		
-	}
-	
-	public int getMedian() {
-		return median;
-	}
-
-	public void setDistributions(List<Map<String, Double>> distributions) {
-		this.distributions = distributions;		
-	}
-	
-	public List<Map<String, Double>> getDistributions() {
-		return distributions;
-	}
-
-	public void setCategory(String category) {
-		this.category = category;		
-	}
-	
-	public String getCategory() {
-		return category;
-	}
-
 }

@@ -1,6 +1,6 @@
 package br.com.uhunter;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.*;
 
@@ -8,6 +8,11 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.appengine.repackaged.com.google.gson.JsonObject;
+import com.google.gson.Gson;
+
+import br.com.uhunter.performance.PerformanceMetric;
+import br.com.uhunter.performance.PerformanceMetric.PerformanceMetricValues;
 import br.com.uhunter.responsive.IsMobileFriendly.IssuesEnum;
 import br.com.uhunter.rest.UsabilityIntegration;
 import br.com.uhunter.utils.JsonValues;
@@ -24,8 +29,7 @@ public class TestUsabilityIntegration {
 	private UsabilityIntegration usabilityIntegration2;
 	private UsabilityIntegration usabilityIntegration3;
 	private UsabilityIntegration usabilityIntegration4;
-		
-	
+			
 	@Before
 	public void initialConfig() throws Exception {
 		usabilityIntegration1 = new UsabilityIntegration(URL_1);
@@ -111,5 +115,13 @@ public class TestUsabilityIntegration {
 		
         return maps;
 	}
-
+	
+	@Test
+	public void TestPerformance() {		
+		Map<String, Object> mapResult1 = usabilityIntegration1.doPerformanceTest();
+		assertTrue(mapResult1.get(JsonValues.PERFORMANCE_TEST.getValue()).toString().contains(PerformanceMetricValues.FIRST_CONTENTFUL_PAINT_MS.getValue()));
+		assertTrue(mapResult1.get(JsonValues.PERFORMANCE_TEST.getValue()).toString().contains(PerformanceMetricValues.DOM_CONTENT_LOADED_EVENT_FIRED_MS.getValue()));
+		assertTrue(mapResult1.get(JsonValues.PERFORMANCE_TEST.getValue()).toString().contains(JsonValues.MOBILE_TEST.getValue()));
+		assertTrue(mapResult1.get(JsonValues.PERFORMANCE_TEST.getValue()).toString().contains(JsonValues.DESKTOP_TEST.getValue()));
+	}
 }

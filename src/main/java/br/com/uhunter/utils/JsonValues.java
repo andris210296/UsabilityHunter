@@ -17,7 +17,27 @@ public enum JsonValues {
 	
 	IS_MOBILE_FRIENDLY_TEST("isMobileFriendlyTest"),
 	IS_MOBILE_FRIENDLY("isMobileFriendly"),
-	LIST_OF_ISSUES("listOfIssues");
+	LIST_OF_ISSUES("listOfIssues"),
+	
+	PERFORMANCE_TEST("performanceTest"),
+	DESKTOP_TEST("desktopTest"),
+	MOBILE_TEST("mobileTest"),
+	OPTIMIZATION_POINTS("optimizationPoints"),
+	LOADING_OVERALL("loadingOverall"),
+		
+	LOADING_PERFORMANCE("loadingPerformance"),
+	
+	METRICS("metrics"),
+	
+	TYPE("type"),
+	DESCRIPTION("description"),
+	PAGE_SPEED("pageSpeed"),
+	PAGE_CONTENT_LOAD_DISTRIBUTION_AVERAGE("pageContentLoadDistributionAverage"),
+	PAGE_CONTENT_LOAD_DISTRIBUTION("pageContentLoadDistribution"),
+	
+	FAST("fast"),
+	AVERAGE("average"),
+	SLOW("slow");
 	
 	private String value;
 	

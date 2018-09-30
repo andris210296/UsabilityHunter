@@ -39,7 +39,8 @@ public class IsMobileFriendly {
 		json.put("url", url);
 		json.put("requestScreenshot", "false");
 		String requestBody = json.toString();
-		HttpRequest request = requestFactory.buildPostRequest(urlApi,ByteArrayContent.fromString("application/json", requestBody));
+		HttpRequest request = requestFactory.buildPostRequest(urlApi,ByteArrayContent.fromString("application/json", requestBody))
+				.setConnectTimeout(3 * 60000).setReadTimeout(3 * 60000);
 		HttpResponse httpResponse = request.execute();
 
 		return httpResponse.parseAsString();		

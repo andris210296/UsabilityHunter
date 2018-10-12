@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 
 import javax.ejb.Init;
@@ -26,53 +27,41 @@ import br.com.uhunter.utils.ImageUtils;
 public class TestNavigationOnLeft {
 
 	private static final String URL_1 = "https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal";
-	private static final String FILE_PATH_1 = "imgTest/wikipediaMatrix_0_0.jpg";
-	private InputStream inputStream1;
-	private BufferedImage bufferedImage1;
+	private static final File FILE_1 = new File("imgTest/wikipediaMatrix_0_0.jpg");
 	private NavigationOnLeft navigationOnLeft1;
 
 	private static final String URL_2 = "https://cursosextensao.usp.br/course/view.php?id=131&section=0";
-	private static final String FILE_PATH_2 = "imgTest/uspPage.jpg";
-	private InputStream inputStream2;
-	private BufferedImage bufferedImage2;
+	private static final File FILE_2 = new File("imgTest/uspPage.jpg");
 	private NavigationOnLeft navigationOnLeft2;
 	
 	private static final String URL_3 = "https://pt.stackoverflow.com/";
-	private static final String FILE_PATH_3 = "imgTest/stackoverflow.jpg";
-	private InputStream inputStream3;
-	private BufferedImage bufferedImage3;
+	private static final File FILE_3 = new File("imgTest/stackoverflow.jpg");
 	private NavigationOnLeft navigationOnLeft3;
 
 	@Before
 	public void initialConfig() throws Exception {
+		byte[] byteImage1 = Files.readAllBytes(FILE_1.toPath());
+		navigationOnLeft1 = new NavigationOnLeft(byteImage1, URL_1);
 		
-		inputStream1 = new FileInputStream(new File(FILE_PATH_1));
-		bufferedImage1 = ImageIO.read(new File(FILE_PATH_1));
-		navigationOnLeft1 = new NavigationOnLeft(inputStream1, bufferedImage1, URL_1);
-		
-		inputStream2 = new FileInputStream(new File(FILE_PATH_2));
-		bufferedImage2 = ImageIO.read(new File(FILE_PATH_2));
-		navigationOnLeft2 = new NavigationOnLeft(inputStream2, bufferedImage2, URL_2);
+		byte[] byteImage2 = Files.readAllBytes(FILE_2.toPath());
+		navigationOnLeft2 = new NavigationOnLeft(byteImage2, URL_2);
 				
-		inputStream3 = new FileInputStream(new File(FILE_PATH_3));
-		bufferedImage3 = ImageIO.read(new File(FILE_PATH_3));
-		navigationOnLeft3 = new NavigationOnLeft(inputStream3, bufferedImage3, URL_3);
+		byte[] byteImage3 = Files.readAllBytes(FILE_3.toPath());
+		navigationOnLeft3 = new NavigationOnLeft(byteImage3, URL_3);
 	}
 
 	@Test
 	public void TestGetVertexesFromImage() throws Exception {
 
 		List<Vertex> vertexes = populateListVertex1();
-		List<List<Vertex>> resultsText1 = getResultsFromGoogleVisionBlockVertexesFromImage(FILE_PATH_1);
+		List<List<Vertex>> resultsText1 = getResultsFromGoogleVisionBlockVertexesFromImage(FILE_1);
 		assertEquals(resultsText1.get(2), vertexes);
 
 	}
 
-	private List<List<Vertex>> getResultsFromGoogleVisionBlockVertexesFromImage(String fileUrl) throws Exception {
-
-		File file = new File(fileUrl);
-		InputStream inputStream = new FileInputStream(file);
-		return GoogleVision.detectBlockVertexesFromImage(inputStream);
+	private List<List<Vertex>> getResultsFromGoogleVisionBlockVertexesFromImage(File file) throws Exception {
+		byte[] byteImage = Files.readAllBytes(file.toPath());
+		return GoogleVision.detectBlockVertexesFromImage(byteImage);
 	}
 
 	@Test
@@ -81,7 +70,7 @@ public class TestNavigationOnLeft {
 		List<String> lines1 = populateLinesOfAParagraph1();
 		List<Vertex> vertexes = populateListVertex1();
 
-		BufferedImage bfImage = ImageUtils.inputStreamToBufferedImage(new FileInputStream(FILE_PATH_1));
+		BufferedImage bfImage = ImageUtils.inputStreamToBufferedImage(new FileInputStream(FILE_1));
 		InputStream inputStream = ImageUtils.getPiece(bfImage, vertexes);
 
 		List<String> result1 = GoogleVision.detectText(inputStream);

@@ -2,6 +2,7 @@ package br.com.uhunter.utils;
 
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketTimeoutException;
 import java.util.*;
@@ -10,6 +11,7 @@ import org.json.JSONObject;
 
 import com.google.api.client.http.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.appengine.repackaged.com.google.common.io.ByteStreams;
 
 public class ScreenshotWebPageModeler {
 
@@ -21,6 +23,8 @@ public class ScreenshotWebPageModeler {
 	private String url;
 	private BufferedImage bufferedImage;
 	private InputStream imputStream;
+	private byte[] byteImage;
+	private byte[][][] byteImageMatrix;
 	private InputStream[][] imputStreamMatrix;
 
 	private List<String> apiKeys = new ArrayList<String>() {
@@ -36,18 +40,21 @@ public class ScreenshotWebPageModeler {
 
 	public ScreenshotWebPageModeler(String url) throws Exception {
 		setUrl(url);
-		setImputStream(takeScreenshot(getUrl()));
+		setImputStream(ImageUtils.byteArrayToInputStream(takeScreenshot(getUrl())));
+		setByteImage(takeScreenshot(getUrl()));
 
 		setBufferedImage(ImageUtils.inputStreamToBufferedImage(getImputStream()));
 		setQuantityOfPieces(getBufferedImage());
 
 		setImputStreamMatrix(bufferedMatrixToInputStreamMatrix((getImagePieces())));
+		setByteImageMatrix(getBytesImagePieces());
+		
 	}
 
 	public ScreenshotWebPageModeler() {
 	}
 
-	public InputStream takeScreenshot(String url) throws Exception {
+	public byte[] takeScreenshot(String url) throws Exception {
 
 		HttpResponse httpResponse;
 
@@ -82,7 +89,13 @@ public class ScreenshotWebPageModeler {
 			}
 		}
 
-		return httpResponse.getContent();
+		InputStream inputStream = httpResponse.getContent();
+		byte[] byteImage = ImageUtils.inputStreamToByteArray(inputStream);
+		
+		inputStream.close();
+		httpResponse.disconnect();
+		
+		return byteImage;
 	}
 
 	/**
@@ -152,7 +165,43 @@ public class ScreenshotWebPageModeler {
 		}
 		return byteString;
 	}
+	
+	public byte[][][] getBytesImagePieces() throws IOException {
+		
+		BufferedImage bfImage = ImageUtils.byteArrayToBufferedImage(getByteImage());
 
+		BufferedImage cut = null;
+
+		int h = 0;
+		int v = 0;
+
+		byte[][][] imagePieces = new byte[getVerticalPieces()][getHorizontalPieces()][];
+
+		Double widthCutDouble = (double) (bfImage.getWidth() / getHorizontalPieces());
+		int widthCut = widthCutDouble.intValue();
+
+		Double heightCutDouble = (double) (bfImage.getHeight() / getVerticalPieces());
+		int heightCut = heightCutDouble.intValue();
+
+		while (v < getVerticalPieces()) {
+			h = 0;
+			while (h < getHorizontalPieces()) {
+				cut = bfImage.getSubimage(h * widthCut, v * heightCut, widthCut, heightCut);
+				imagePieces[v][h] = ImageUtils.bufferedImageToByteArray(cut);
+
+				h += 1;
+			}
+			v += 1;
+		}
+		v = 0;
+
+		return imagePieces;
+	}
+
+	public byte[] getByteImagePiece(int v, int h) {
+		return getByteImageMatrix()[v][h];
+	}
+	
 	public InputStream getImagePiece(int v, int h) {
 		return getImputStreamMatrix()[v][h];
 	}
@@ -180,6 +229,14 @@ public class ScreenshotWebPageModeler {
 	public void setImputStream(InputStream imputStream) {
 		this.imputStream = imputStream;
 	}
+	
+	public byte[] getByteImage() {
+		return byteImage;
+	}
+
+	public void setByteImage(byte[] byteImage) {
+		this.byteImage = byteImage;
+	}
 
 	public String getUrl() {
 		return url;
@@ -192,9 +249,17 @@ public class ScreenshotWebPageModeler {
 	public InputStream[][] getImputStreamMatrix() {
 		return imputStreamMatrix;
 	}
+	
+	public byte[][][] getByteImageMatrix() {
+		return byteImageMatrix;
+	}
 
 	public void setImputStreamMatrix(InputStream[][] imputStreamMatrix) {
 		this.imputStreamMatrix = imputStreamMatrix;
+	}
+	
+	public void setByteImageMatrix(byte[][][] byteImageMatrix) {
+		this.byteImageMatrix = byteImageMatrix;
 	}
 
 	public BufferedImage getBufferedImage() {

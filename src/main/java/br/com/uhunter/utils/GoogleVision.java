@@ -45,7 +45,7 @@ public class GoogleVision {
 
 	}
 
-	public static List<List<Vertex>> detectBlockVertexesFromImage(InputStream inputStream) throws Exception {
+	public static List<List<Vertex>> detectBlockVertexesFromImage(byte[] byteImage) throws Exception {
 		
 		List<List<Vertex>> listVertexes = new ArrayList<>();
 		List<Vertex> vertexes = new ArrayList<>();
@@ -53,7 +53,7 @@ public class GoogleVision {
 
 		List<AnnotateImageRequest> requests = new ArrayList<>();
 
-		ByteString imgBytes = ByteString.readFrom(inputStream);
+		ByteString imgBytes = ByteString.copyFrom(byteImage);
 
 		Image img = Image.newBuilder().setContent(imgBytes).build();
 		Feature feat = Feature.newBuilder().setType(Type.DOCUMENT_TEXT_DETECTION).build();

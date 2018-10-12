@@ -49,6 +49,7 @@ public class TestScreenshotWebPageModeler {
 		
 		ScreenshotWebPageModeler screenshotWebPageModeler = spy(ScreenshotWebPageModeler.class);
 		screenshotWebPageModeler.setImputStream(inputStream);
+		screenshotWebPageModeler.setBufferedImage(ImageUtils.inputStreamToBufferedImage(inputStream));
 		screenshotWebPageModeler.setVerticalPieces(5);
 		screenshotWebPageModeler.setHorizontalPieces(2);
 		
@@ -105,6 +106,33 @@ public class TestScreenshotWebPageModeler {
 		InputStream inputStream2 = screenshotWebPageModeler2.getImagePiece(0,0);		
 		String result2 = logoIdentification2.isThereALogoOnTopLeftCorner(url2, inputStream2);		
 		assertEquals("StackOverflow", result2);	
-	}	
+	}
+	
+	@Test
+	public void TestMatrixByteArray() throws Exception {
+		
+		File file = new File("imgTest/wikipediaScreenshot.jpg");
+
+		InputStream inputStream = new FileInputStream(file);
+		
+		ScreenshotWebPageModeler screenshotWebPageModeler = spy(ScreenshotWebPageModeler.class);
+		screenshotWebPageModeler.setImputStream(inputStream);
+		screenshotWebPageModeler.setVerticalPieces(5);
+		screenshotWebPageModeler.setHorizontalPieces(2);
+		
+		byte[][][] screenshotMatrix = screenshotWebPageModeler.getBytesImagePieces();
+		
+		assertEquals(2, screenshotMatrix[0].length);
+		assertEquals(5, screenshotMatrix.length);	
+
+		LogoIdentification logoIdentification = new LogoIdentification();
+		InputStream inputStream2 = ImageUtils.byteArrayToInputStream(screenshotMatrix[0][0]);
+		String result = logoIdentification.isThereALogoOnTopLeftCorner("https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal", inputStream2);
+		
+		assertEquals("Wikipedia", result);
+		assertTrue(result != null);
+		
+		
+	}
 
 }

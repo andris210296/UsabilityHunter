@@ -17,7 +17,7 @@ import net.bytebuddy.dynamic.scaffold.MethodGraph.NodeList;
 
 public class NavigationOnLeft {
 
-	private InputStream inputStream;
+	private byte[] byteImage;
 	private BufferedImage bufferedImage;
 	private String url;
 	private List<ParagraphText> paragraphs = new ArrayList<>();
@@ -29,9 +29,9 @@ public class NavigationOnLeft {
 	private List<List<String>> itemsOnAlphabeticalOrder = new ArrayList<>();
 	private List<String> itemsOnNavBarTag = new ArrayList<>();
 
-	public NavigationOnLeft(InputStream inputStream, BufferedImage bufferedImage, String url) throws Exception {
-		setInputStream(inputStream);
-		setBufferedImage(bufferedImage);
+	public NavigationOnLeft(byte[] byteImage, String url) throws Exception {
+		setByteImage(byteImage);
+		setBufferedImage(ImageUtils.byteArrayToBufferedImage(getByteImage()));
 		setUrl(url);
 
 		setParagraphs();
@@ -50,7 +50,7 @@ public class NavigationOnLeft {
 
 		List<ParagraphText> paragraphs = new ArrayList<>();
 
-		List<List<Vertex>> vertexes = GoogleVision.detectBlockVertexesFromImage(getInputStream());
+		List<List<Vertex>> vertexes = GoogleVision.detectBlockVertexesFromImage(getByteImage());
 
 		for (List<Vertex> vertex : vertexes) {
 
@@ -280,12 +280,12 @@ public class NavigationOnLeft {
 		return quantityOfItemsOnMiddleLeft;
 	}
 
-	public InputStream getInputStream() {
-		return inputStream;
+	public byte[] getByteImage() {
+		return byteImage;
 	}
 
-	public void setInputStream(InputStream inputStream) {
-		this.inputStream = inputStream;
+	public void setByteImage(byte[] byteImage) {
+		this.byteImage = byteImage;
 	}
 
 	public BufferedImage getBufferedImage() {

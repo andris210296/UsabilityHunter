@@ -60,15 +60,8 @@ public class UsabilityIntegration {
 		Map<String, String> map = new HashMap<>();
 
 		try {
-
-			ImageUtils.inputStreamToFile(screenshotWebPageModeler.getImagePiece(0, 0));
-
-			File file = new File("imgTest/image.jpg");
-			BufferedImage bufferedImage = ImageIO.read(file);
-
-			InputStream inputStream = new FileInputStream(file);
-
-			NavigationOnLeft navigationOnLeft = new NavigationOnLeft(inputStream, bufferedImage, url);
+			
+			NavigationOnLeft navigationOnLeft = new NavigationOnLeft(screenshotWebPageModeler.getByteImagePiece(0, 0), url);
 			boolean responseNavigationOnTheLeftSide = navigationOnLeft.isTheNavigationOnTheLeftSide();
 
 			if (responseNavigationOnTheLeftSide) {
@@ -90,7 +83,7 @@ public class UsabilityIntegration {
 			}
 
 		} catch (Exception e) {
-			map.put(JsonValues.NAVIGATION_ON_LEFT_CORNER.getValue(), e.getStackTrace().toString());
+			map.put(JsonValues.NAVIGATION_ON_LEFT_CORNER.getValue(), e.getMessage());
 		}
 		return map;
 	}

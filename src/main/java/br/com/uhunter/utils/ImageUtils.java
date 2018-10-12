@@ -8,7 +8,9 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import com.google.appengine.repackaged.com.google.common.io.ByteStreams;
 import com.google.cloud.vision.v1.Vertex;
+import com.google.common.io.ByteSource;
 
 public class ImageUtils {
 
@@ -121,7 +123,26 @@ public class ImageUtils {
 		}
 
 		return bufferedImages;
+	}
 
+	public static BufferedImage byteArrayToBufferedImage(byte[] byteImage) throws IOException {
+		ByteArrayInputStream bais = new ByteArrayInputStream(byteImage);
+		return ImageIO.read(bais);
+	}
+	
+	public static byte[] inputStreamToByteArray(InputStream inputStream) throws IOException {
+		return ByteStreams.toByteArray(inputStream);
+	}
+	
+	public static InputStream byteArrayToInputStream(byte[] byteImage) throws IOException {
+		return ByteSource.wrap(byteImage).openStream();
+	}
+	
+	public static byte[] bufferedImageToByteArray(BufferedImage bufferedImage) throws IOException {
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream()){
+            ImageIO.write(bufferedImage, "jpg", out);
+            return out.toByteArray();
+        }
 	}
 
 }

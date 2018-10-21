@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Files;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -12,6 +13,7 @@ import static org.mockito.Mockito.*;
 import javax.imageio.ImageIO;
 
 import org.junit.Test;
+
 
 import br.com.uhunter.logo.LogoIdentification;
 import br.com.uhunter.utils.ImageUtils;
@@ -24,7 +26,7 @@ public class TestScreenshotWebPageModeler {
 		String url1 = "https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal";
 
 		ScreenshotWebPageModeler screenshotWebPageModeler = new ScreenshotWebPageModeler();
-		InputStream inputStream = screenshotWebPageModeler.takeScreenshot(url1);
+		InputStream inputStream = ImageUtils.byteArrayToInputStream(screenshotWebPageModeler.takeScreenshot(url1));
 
 		assertNotNull(inputStream);
 	}
@@ -44,67 +46,42 @@ public class TestScreenshotWebPageModeler {
 	@Test
 	public void TestScreenshotMatrix() throws Exception {		
 		File file = new File("imgTest/wikipediaScreenshot.jpg");
-
-		InputStream inputStream = new FileInputStream(file);
 		
 		ScreenshotWebPageModeler screenshotWebPageModeler = spy(ScreenshotWebPageModeler.class);
-		screenshotWebPageModeler.setImputStream(inputStream);
-		screenshotWebPageModeler.setBufferedImage(ImageUtils.inputStreamToBufferedImage(inputStream));
+		screenshotWebPageModeler.setByteImage(Files.readAllBytes(file.toPath()));
+		screenshotWebPageModeler.setBufferedImage(ImageUtils.byteArrayToBufferedImage(Files.readAllBytes(file.toPath())));
 		screenshotWebPageModeler.setVerticalPieces(5);
 		screenshotWebPageModeler.setHorizontalPieces(2);
 		
-		BufferedImage[][] screenshotMatrix = screenshotWebPageModeler.getImagePieces();
+		byte[][][] screenshotMatrix = screenshotWebPageModeler.getByteImageMatrix();
 		
 		assertEquals(2, screenshotMatrix[0].length);
 		assertEquals(5, screenshotMatrix.length);	
 
 		LogoIdentification logoIdentification = new LogoIdentification();
-		InputStream inputStream2 = ImageUtils.bufferedImageToInputStream(screenshotMatrix[0][0]);
-		String result = logoIdentification.isThereALogoOnTopLeftCorner("https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal", inputStream2);
+		byte[] byteImage2 = screenshotMatrix[0][0];
+		String result = logoIdentification.isThereALogoOnTopLeftCorner("https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal", byteImage2);
 		
 		assertEquals("Wikipedia", result);
 		assertTrue(result != null);
 		
 	}
-	
-	@Test
-	public void TestBufferedMatrixToInputStreamMatrix() throws Exception {
 		
-		File file = new File("imgTest/wikipediaScreenshot.jpg");
-		
-		BufferedImage[][] bufferedImages = new BufferedImage[2][2];
-		bufferedImages[0][0] = ImageIO.read(file);
-		bufferedImages[0][1] = ImageIO.read(file);
-		bufferedImages[1][0] = ImageIO.read(file);
-		bufferedImages[1][1] = ImageIO.read(file);
-		
-		ScreenshotWebPageModeler screenshotWebPageModeler = new ScreenshotWebPageModeler();		
-		InputStream[][] inputStreams = screenshotWebPageModeler.bufferedMatrixToInputStreamMatrix(bufferedImages);
-		
-		for(int i = 0; i < inputStreams.length; i ++)
-		{
-			for(int j = 0; j < inputStreams[0].length; j ++)
-			{
-				assertTrue(inputStreams[i][j] != null);				
-			}			
-		}				
-	}
-	
 	@Test
 	public void TestGetImagePiece() throws Exception {
 
 		String url = "https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal";		
 		LogoIdentification logoIdentification = new LogoIdentification();						
 		ScreenshotWebPageModeler screenshotWebPageModeler = new ScreenshotWebPageModeler(url);
-		InputStream inputStream = screenshotWebPageModeler.getImagePiece(0,0);		
-		String result = logoIdentification.isThereALogoOnTopLeftCorner(url, inputStream);		
+		byte[] byteImage = screenshotWebPageModeler.getByteImagePiece(0,0);		
+		String result = logoIdentification.isThereALogoOnTopLeftCorner(url, byteImage);		
 		assertEquals("Wikipedia", result);	
 		
 		String url2 = "https://pt.stackoverflow.com/";		
 		LogoIdentification logoIdentification2 = new LogoIdentification();						
 		ScreenshotWebPageModeler screenshotWebPageModeler2 = new ScreenshotWebPageModeler(url2);
-		InputStream inputStream2 = screenshotWebPageModeler2.getImagePiece(0,0);		
-		String result2 = logoIdentification2.isThereALogoOnTopLeftCorner(url2, inputStream2);		
+		byte[] byteImage2 = screenshotWebPageModeler2.getByteImagePiece(0,0);		
+		String result2 = logoIdentification2.isThereALogoOnTopLeftCorner(url2, byteImage2);		
 		assertEquals("StackOverflow", result2);	
 	}
 	
@@ -112,11 +89,9 @@ public class TestScreenshotWebPageModeler {
 	public void TestMatrixByteArray() throws Exception {
 		
 		File file = new File("imgTest/wikipediaScreenshot.jpg");
-
-		InputStream inputStream = new FileInputStream(file);
 		
 		ScreenshotWebPageModeler screenshotWebPageModeler = spy(ScreenshotWebPageModeler.class);
-		screenshotWebPageModeler.setImputStream(inputStream);
+		screenshotWebPageModeler.setByteImage(Files.readAllBytes(file.toPath()));
 		screenshotWebPageModeler.setVerticalPieces(5);
 		screenshotWebPageModeler.setHorizontalPieces(2);
 		
@@ -126,8 +101,8 @@ public class TestScreenshotWebPageModeler {
 		assertEquals(5, screenshotMatrix.length);	
 
 		LogoIdentification logoIdentification = new LogoIdentification();
-		InputStream inputStream2 = ImageUtils.byteArrayToInputStream(screenshotMatrix[0][0]);
-		String result = logoIdentification.isThereALogoOnTopLeftCorner("https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal", inputStream2);
+		byte[] byteImage2 = screenshotMatrix[0][0];
+		String result = logoIdentification.isThereALogoOnTopLeftCorner("https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal", byteImage2);
 		
 		assertEquals("Wikipedia", result);
 		assertTrue(result != null);

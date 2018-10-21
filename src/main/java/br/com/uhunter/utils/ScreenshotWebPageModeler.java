@@ -22,10 +22,8 @@ public class ScreenshotWebPageModeler {
 
 	private String url;
 	private BufferedImage bufferedImage;
-	private InputStream imputStream;
 	private byte[] byteImage;
 	private byte[][][] byteImageMatrix;
-	private InputStream[][] imputStreamMatrix;
 
 	private List<String> apiKeys = new ArrayList<String>() {
 		{
@@ -40,13 +38,11 @@ public class ScreenshotWebPageModeler {
 
 	public ScreenshotWebPageModeler(String url) throws Exception {
 		setUrl(url);
-		setImputStream(ImageUtils.byteArrayToInputStream(takeScreenshot(getUrl())));
 		setByteImage(takeScreenshot(getUrl()));
 
-		setBufferedImage(ImageUtils.inputStreamToBufferedImage(getImputStream()));
+		setBufferedImage(ImageUtils.byteArrayToBufferedImage(getByteImage()));
 		setQuantityOfPieces(getBufferedImage());
 
-		setImputStreamMatrix(bufferedMatrixToInputStreamMatrix((getImagePieces())));
 		setByteImageMatrix(getBytesImagePieces());
 		
 	}
@@ -122,50 +118,7 @@ public class ScreenshotWebPageModeler {
 	 *
 	 * @return
 	 * @throws Exception
-	 */
-	public BufferedImage[][] getImagePieces() throws Exception {
-
-		BufferedImage bfImage = getBufferedImage();
-
-		BufferedImage cut = null;
-
-		int h = 0;
-		int v = 0;
-
-		BufferedImage[][] imagePieces = new BufferedImage[getVerticalPieces()][getHorizontalPieces()];
-
-		Double widthCutDouble = (double) (bfImage.getWidth() / getHorizontalPieces());
-		int widthCut = widthCutDouble.intValue();
-
-		Double heightCutDouble = (double) (bfImage.getHeight() / getVerticalPieces());
-		int heightCut = heightCutDouble.intValue();
-
-		while (v < getVerticalPieces()) {
-			h = 0;
-			while (h < getHorizontalPieces()) {
-				cut = bfImage.getSubimage(h * widthCut, v * heightCut, widthCut, heightCut);
-				imagePieces[v][h] = cut;
-
-				h += 1;
-			}
-			v += 1;
-		}
-		v = 0;
-
-		return imagePieces;
-	}
-
-	public InputStream[][] bufferedMatrixToInputStreamMatrix(BufferedImage[][] bufferedImages) throws Exception {
-		InputStream[][] byteString = new InputStream[getVerticalPieces()][getHorizontalPieces()];
-
-		for (int v = 0; v < getVerticalPieces(); v++) {
-			for (int h = 0; h < getHorizontalPieces(); h++) {
-				byteString[v][h] = ImageUtils.bufferedImageToInputStream(bufferedImages[v][h]);
-			}
-		}
-		return byteString;
-	}
-	
+	 */	
 	public byte[][][] getBytesImagePieces() throws IOException {
 		
 		BufferedImage bfImage = ImageUtils.byteArrayToBufferedImage(getByteImage());
@@ -201,10 +154,6 @@ public class ScreenshotWebPageModeler {
 	public byte[] getByteImagePiece(int v, int h) {
 		return getByteImageMatrix()[v][h];
 	}
-	
-	public InputStream getImagePiece(int v, int h) {
-		return getImputStreamMatrix()[v][h];
-	}
 
 	public void setHorizontalPieces(int horizontalPieces) {
 		this.horizontalPieces = horizontalPieces;
@@ -220,14 +169,6 @@ public class ScreenshotWebPageModeler {
 
 	public int getHorizontalPieces() {
 		return horizontalPieces;
-	}
-
-	public InputStream getImputStream() {
-		return imputStream;
-	}
-
-	public void setImputStream(InputStream imputStream) {
-		this.imputStream = imputStream;
 	}
 	
 	public byte[] getByteImage() {
@@ -245,17 +186,9 @@ public class ScreenshotWebPageModeler {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-
-	public InputStream[][] getImputStreamMatrix() {
-		return imputStreamMatrix;
-	}
 	
 	public byte[][][] getByteImageMatrix() {
 		return byteImageMatrix;
-	}
-
-	public void setImputStreamMatrix(InputStream[][] imputStreamMatrix) {
-		this.imputStreamMatrix = imputStreamMatrix;
 	}
 	
 	public void setByteImageMatrix(byte[][][] byteImageMatrix) {

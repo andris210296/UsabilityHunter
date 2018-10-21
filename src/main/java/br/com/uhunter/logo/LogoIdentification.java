@@ -17,9 +17,9 @@ public class LogoIdentification {
 	private String pageTitle;
 	
 	
-	public String isThereALogoOnTopLeftCorner(String url, InputStream inputStream) throws Exception {
+	public String isThereALogoOnTopLeftCorner(String url, byte[] byteImage) throws Exception {
 		
-		List<String> logos = GoogleVision.detectLogo(inputStream);
+		List<String> logos = GoogleVision.detectLogo(byteImage);
 		setPageTitle(getWebPageTitleFromHtml(url));
 		
 		return isStringInsideOfTheTitle(logos);

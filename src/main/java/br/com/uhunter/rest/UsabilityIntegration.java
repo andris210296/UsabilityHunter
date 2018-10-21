@@ -20,7 +20,7 @@ import br.com.uhunter.utils.*;
 public class UsabilityIntegration {
 
 	private String url;
-	private BufferedImage[][] webPageScreenshotMatrix;
+	private byte[][][] webPageScreenshotMatrix;
 	private ScreenshotWebPageModeler screenshotWebPageModeler;
 
 	public UsabilityIntegration(String url) throws Exception {
@@ -28,7 +28,7 @@ public class UsabilityIntegration {
 
 		screenshotWebPageModeler = new ScreenshotWebPageModeler(url);
 
-		setWebPageScreenshotMatrix(screenshotWebPageModeler.getImagePieces());
+		setWebPageScreenshotMatrix(screenshotWebPageModeler.getByteImageMatrix());
 	}
 
 	public Map<String, String> doLogoTest() {
@@ -37,8 +37,8 @@ public class UsabilityIntegration {
 		try {
 
 			LogoIdentification logoIdentification = new LogoIdentification();
-			InputStream inputStream = screenshotWebPageModeler.getImagePiece(0, 0);
-			String logo = logoIdentification.isThereALogoOnTopLeftCorner(getUrl(), inputStream);
+			byte[] byteImage = screenshotWebPageModeler.getByteImagePiece(0, 0);
+			String logo = logoIdentification.isThereALogoOnTopLeftCorner(getUrl(), byteImage);
 
 			if (logo != null) {
 				map.put(JsonValues.LOGO_NAME.getValue(), logo);
@@ -204,11 +204,11 @@ public class UsabilityIntegration {
 		this.url = url;
 	}
 
-	public BufferedImage[][] getWebPageScreenshotMatrix() {
+	public byte[][][] getWebPageScreenshotMatrix() {
 		return webPageScreenshotMatrix;
 	}
 
-	public void setWebPageScreenshotMatrix(BufferedImage[][] webPageScreenshotMatrix) {
+	public void setWebPageScreenshotMatrix(byte[][][] webPageScreenshotMatrix) {
 		this.webPageScreenshotMatrix = webPageScreenshotMatrix;
 	}
 

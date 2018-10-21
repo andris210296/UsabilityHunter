@@ -13,12 +13,12 @@ import com.google.protobuf.ByteString;
 
 public class GoogleVision {
 
-	public static List<String> detectLogo(InputStream inputStream) throws Exception {
+	public static List<String> detectLogo(byte[] byteImage) throws Exception {
 
 		List<AnnotateImageRequest> requests = new ArrayList<>();
 		List<String> result = new ArrayList<>();
 
-		ByteString imgBytes = ByteString.readFrom(inputStream);
+		ByteString imgBytes = ByteString.copyFrom(byteImage);
 
 		Image img = Image.newBuilder().setContent(imgBytes).build();
 		Feature feat = Feature.newBuilder().setType(Type.LOGO_DETECTION).build();
@@ -109,12 +109,12 @@ public class GoogleVision {
 		return listVertexes;
 	}
 	
-	public static List<String> detectText(InputStream inputStream) throws Exception {
+	public static List<String> detectText(byte[] byteImage) throws Exception {
 
 		List<AnnotateImageRequest> requests = new ArrayList<>();
 		List<String> result = new ArrayList<>();
 
-		ByteString imgBytes = ByteString.readFrom(inputStream);
+		ByteString imgBytes = ByteString.copyFrom(byteImage);
 
 		Image img = Image.newBuilder().setContent(imgBytes).build();
 		Feature feat = Feature.newBuilder().setType(Type.TEXT_DETECTION).build();

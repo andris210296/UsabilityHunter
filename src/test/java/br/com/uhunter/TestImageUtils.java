@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class TestImageUtils {
 	public void TestGetTextFromAPieceOfImage() throws Exception {
 				
 		File file = new File("imgTest/wikipediaNavigation.jpg");
-		InputStream inputStream = new FileInputStream(file);
+		byte[] byteImage = Files.readAllBytes(file.toPath());
 		
 		List<String> strings = new ArrayList<>();
 		strings.add("WIKIPEDIA");
@@ -37,9 +38,10 @@ public class TestImageUtils {
 		vertexes.add(Vertex.newBuilder().setX(148).setY(157).build());
 		vertexes.add(Vertex.newBuilder().setX(27).setY(157).build());
 		
-		InputStream inputStreamPiece = ImageUtils.getPiece(ImageUtils.inputStreamToBufferedImage(inputStream), vertexes);
+				
+		byte[] byteImagePiece = ImageUtils.getPiece(ImageUtils.byteArrayToBufferedImage(byteImage), vertexes);
 		
-		List<String> result = GoogleVision.detectText(inputStreamPiece);
+		List<String> result = GoogleVision.detectText(byteImagePiece);
 		
 		assertEquals(strings, result);
 	}
@@ -48,7 +50,7 @@ public class TestImageUtils {
 	public void TestGetTextFromAPieceOfImageWhenTheSquareIsRotated() throws Exception {
 				
 		File file = new File("imgTest/wikipediaNavigation.jpg");
-		InputStream inputStream = new FileInputStream(file);
+		byte[] byteImage = Files.readAllBytes(file.toPath());
 		
 		List<String> strings = new ArrayList<>();
 				
@@ -58,9 +60,9 @@ public class TestImageUtils {
 		vertexes.add(Vertex.newBuilder().setX(111).setY(54).build());
 		vertexes.add(Vertex.newBuilder().setX(56).setY(74).build());
 		
-		InputStream inputStreamPiece = ImageUtils.getPiece(ImageUtils.inputStreamToBufferedImage(inputStream), vertexes);
+		byte[] byteImagePiece = ImageUtils.getPiece(ImageUtils.byteArrayToBufferedImage(byteImage), vertexes);
 		
-		List<String> result = GoogleVision.detectText(inputStreamPiece);
+		List<String> result = GoogleVision.detectText(byteImagePiece);
 		
 		assertEquals(strings, result);
 		
@@ -78,9 +80,9 @@ public class TestImageUtils {
 		vertexes2.add(Vertex.newBuilder().setX(423).setY(148).build());
 		vertexes2.add(Vertex.newBuilder().setX(341).setY(148).build());
 		
-		InputStream inputStreamPiece1 = ImageUtils.getPiece(ImageUtils.inputStreamToBufferedImage(new FileInputStream("imgTest/uspNavigation.jpg")), vertexes2);
+		byte[] byteImage1 = ImageUtils.getPiece(ImageUtils.byteArrayToBufferedImage(Files.readAllBytes(new File("imgTest/uspNavigation.jpg").toPath())), vertexes2);
 		
-		List<String> result1 = GoogleVision.detectText(inputStreamPiece1);
+		List<String> result1 = GoogleVision.detectText(byteImage1);
 		
 		assertEquals(strings1, result1);
 				
@@ -95,9 +97,9 @@ public class TestImageUtils {
 		vertexes1.add(Vertex.newBuilder().setX(643).setY(274).build());
 		vertexes1.add(Vertex.newBuilder().setX(546).setY(274).build());
 		
-		InputStream inputStreamPiece2 = ImageUtils.getPiece(ImageUtils.inputStreamToBufferedImage(new FileInputStream("imgTest/stackoverflow.jpg")), vertexes1);
+		byte[] byteImage2 = ImageUtils.getPiece(ImageUtils.byteArrayToBufferedImage(Files.readAllBytes(new File("imgTest/stackoverflow.jpg").toPath())), vertexes1);
 		
-		List<String> result2 = GoogleVision.detectText(inputStreamPiece2);
+		List<String> result2 = GoogleVision.detectText(byteImage2);
 		
 		assertEquals(strings2, result2);
 		
@@ -110,9 +112,9 @@ public class TestImageUtils {
 		vertexes3.add(Vertex.newBuilder().setX(256).setY(495).build());
 		vertexes3.add(Vertex.newBuilder().setX(253).setY(496).build());
 		
-		InputStream inputStreamPiece3 = ImageUtils.getPiece(ImageUtils.inputStreamToBufferedImage(new FileInputStream("imgTest/stackoverflow.jpg")), vertexes3);
+		byte[] byteImage3 = ImageUtils.getPiece(ImageUtils.byteArrayToBufferedImage(Files.readAllBytes(new File("imgTest/stackoverflow.jpg").toPath())), vertexes3);
 		
-		List<String> result3 = GoogleVision.detectText(inputStreamPiece3);
+		List<String> result3 = GoogleVision.detectText(byteImage3);
 		
 		assertEquals(strings3, result3);
 		
@@ -127,9 +129,9 @@ public class TestImageUtils {
 		vertexes4.add(Vertex.newBuilder().setX(644).setY(522).build());
 		vertexes4.add(Vertex.newBuilder().setX(366).setY(522).build());
 		
-		InputStream inputStreamPiece4 = ImageUtils.getPiece(ImageUtils.inputStreamToBufferedImage(new FileInputStream("imgTest/uspPage.jpg")), vertexes4);
+		byte[] byteImage4 = ImageUtils.getPiece(ImageUtils.byteArrayToBufferedImage(Files.readAllBytes(new File("imgTest/uspPage.jpg").toPath())), vertexes4);		
 		
-		List<String> result4 = GoogleVision.detectText(inputStreamPiece4);
+		List<String> result4 = GoogleVision.detectText(byteImage4);
 		
 		for (String string : strings4) {
 			assertTrue(result4.contains(string));
@@ -145,9 +147,9 @@ public class TestImageUtils {
 		vertexes5.add(Vertex.newBuilder().setX(157).setY(48).build());
 		vertexes5.add(Vertex.newBuilder().setX(31).setY(48).build());
 		
-		InputStream inputStreamPiece5 = ImageUtils.getPiece(ImageUtils.inputStreamToBufferedImage(new FileInputStream("imgTest/uspPage.jpg")), vertexes5);
-		
-		List<String> result5 = GoogleVision.detectText(inputStreamPiece5);
+		byte[] byteImage5 = ImageUtils.getPiece(ImageUtils.byteArrayToBufferedImage(Files.readAllBytes(new File("imgTest/uspPage.jpg").toPath())), vertexes5);	
+		 		
+		List<String> result5 = GoogleVision.detectText(byteImage5);
 		
 		for (String string : strings5) {
 			assertTrue(result5.contains(string));
@@ -162,9 +164,9 @@ public class TestImageUtils {
 		vertexes6.add(Vertex.newBuilder().setX(689).setY(244).build());
 		vertexes6.add(Vertex.newBuilder().setX(442).setY(246).build());
 		
-		InputStream inputStreamPiece6 = ImageUtils.getPiece(ImageUtils.inputStreamToBufferedImage(new FileInputStream("imgTest/wikipediaMatrix_0_0.jpg")), vertexes6);
+		byte[] byteImage6 = ImageUtils.getPiece(ImageUtils.byteArrayToBufferedImage(Files.readAllBytes(new File("imgTest/wikipediaMatrix_0_0.jpg").toPath())), vertexes6);		
 		
-		List<String> result6 = GoogleVision.detectText(inputStreamPiece6);
+		List<String> result6 = GoogleVision.detectText(byteImage6);
 		
 		assertTrue(result6.isEmpty());
 		

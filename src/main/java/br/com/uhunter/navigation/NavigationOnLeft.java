@@ -54,9 +54,9 @@ public class NavigationOnLeft {
 
 		for (List<Vertex> vertex : vertexes) {
 
-			InputStream is = ImageUtils.getPiece(getBufferedImage(), vertex);
+			byte[] byteImage = ImageUtils.getPiece(getBufferedImage(), vertex);
 
-			List<String> lines = GoogleVision.detectText(is);
+			List<String> lines = GoogleVision.detectText(byteImage);
 			paragraphs.add(new ParagraphText(vertex, lines));
 		}
 

@@ -71,9 +71,9 @@ public class TestNavigationOnLeft {
 		List<Vertex> vertexes = populateListVertex1();
 
 		BufferedImage bfImage = ImageUtils.inputStreamToBufferedImage(new FileInputStream(FILE_1));
-		InputStream inputStream = ImageUtils.getPiece(bfImage, vertexes);
+		byte[] byteImage = ImageUtils.getPiece(bfImage, vertexes);
 
-		List<String> result1 = GoogleVision.detectText(inputStream);
+		List<String> result1 = GoogleVision.detectText(byteImage);
 		assertEquals(result1, lines1);
 	}
 

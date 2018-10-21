@@ -69,13 +69,13 @@ public class RestInterfaceImpl {
 				}
 			});
 			
-			//threadLogo.start();
+			threadLogo.start();
 			threadNavigation.start();
-			//threadMobile.start();				
-			//threadPerformance.start();
+			threadMobile.start();				
+			threadPerformance.start();
 								
 			
-			while(jsonObject.keySet().size() != 1) {
+			while(jsonObject.keySet().size() != 4) {
 			}
 
 			return jsonObject.toString();

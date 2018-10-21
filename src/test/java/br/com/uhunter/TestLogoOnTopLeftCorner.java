@@ -3,6 +3,7 @@ package br.com.uhunter;
 import static org.junit.Assert.*;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,10 +19,9 @@ public class TestLogoOnTopLeftCorner {
 	public void TestIsThereALogoOnTopLeftCorner() throws Exception {
 		String url = "https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal";
 		File file = new File("imgTest/wikipediaMatrix_0_0.jpg");
-		InputStream inputStream = new FileInputStream(file);
 		
 		LogoIdentification logoIdentification = new LogoIdentification();
-		String result = logoIdentification.isThereALogoOnTopLeftCorner(url, inputStream);
+		String result = logoIdentification.isThereALogoOnTopLeftCorner(url, Files.readAllBytes(file.toPath()));
 		
 		assertEquals("Wikipedia", result);
 		assertTrue(result != null);
@@ -71,8 +71,7 @@ public class TestLogoOnTopLeftCorner {
 
 	private List<String> getResultsFromGoogleVisionDetectLogo(String fileUrl) throws Exception {
 		File fileLogo = new File(fileUrl);
-		InputStream imputStreamLogo1 = new FileInputStream(fileLogo);
-		return GoogleVision.detectLogo(imputStreamLogo1);
+		return GoogleVision.detectLogo(Files.readAllBytes(fileLogo.toPath()));
 	}
 
 	private String getLogoAfterVerificationWithUrlTitle(String logo, List<String> logos) {

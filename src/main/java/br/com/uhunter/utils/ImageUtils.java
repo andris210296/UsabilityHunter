@@ -14,43 +14,43 @@ import com.google.common.io.ByteSource;
 
 public class ImageUtils {
 
-	public static InputStream getPiece(BufferedImage bfImage, List<Vertex> vertexes) throws Exception {
+	public static byte[] getPiece(BufferedImage bfImage, List<Vertex> vertexes) throws Exception {
 
 		int widthCut = Math.abs(vertexes.get(3).getX() - vertexes.get(1).getX());
 		int heightCut = Math.abs(vertexes.get(3).getY() - vertexes.get(1).getY());
 
 		try {
-			return bufferedImageToInputStream(
+			return bufferedImageToByteArray(
 					bfImage.getSubimage(vertexes.get(0).getX(), vertexes.get(0).getY(), widthCut, heightCut));
 
 		} catch (RasterFormatException e1) {
 
 			try {
-				return bufferedImageToInputStream(bfImage.getSubimage(vertexes.get(0).getX() - 1,
+				return bufferedImageToByteArray(bfImage.getSubimage(vertexes.get(0).getX() - 1,
 						vertexes.get(0).getY(), widthCut - 1, heightCut));
 
 			} catch (RasterFormatException e2) {
 				try {
-					return bufferedImageToInputStream(bfImage.getSubimage(vertexes.get(0).getX() - 2,
+					return bufferedImageToByteArray(bfImage.getSubimage(vertexes.get(0).getX() - 2,
 							vertexes.get(0).getY(), widthCut - 2, heightCut));
 				} catch (RasterFormatException e3) {
 					try {
-						return bufferedImageToInputStream(bfImage.getSubimage(vertexes.get(0).getX() + 1,
+						return bufferedImageToByteArray(bfImage.getSubimage(vertexes.get(0).getX() + 1,
 								vertexes.get(0).getY(), widthCut + 1, heightCut));
 					} catch (RasterFormatException e4) {
 						try {
-							return bufferedImageToInputStream(bfImage.getSubimage(vertexes.get(0).getX(),
+							return bufferedImageToByteArray(bfImage.getSubimage(vertexes.get(0).getX(),
 									vertexes.get(0).getY() - 1, widthCut, heightCut - 1));
 						} catch (RasterFormatException e5) {
 							try {
-								return bufferedImageToInputStream(bfImage.getSubimage(vertexes.get(0).getX() - 2,
+								return bufferedImageToByteArray(bfImage.getSubimage(vertexes.get(0).getX() - 2,
 										vertexes.get(0).getY() - 1, widthCut - 2, heightCut - 1));
 							} catch (RasterFormatException e6) {
 								try {
-									return bufferedImageToInputStream(bfImage.getSubimage(vertexes.get(0).getX(),
+									return bufferedImageToByteArray(bfImage.getSubimage(vertexes.get(0).getX(),
 											vertexes.get(0).getY() + 1, widthCut, heightCut + 1));
 								} catch (RasterFormatException e7) {
-									return bufferedImageToInputStream(bfImage.getSubimage(vertexes.get(0).getX() - 3,
+									return bufferedImageToByteArray(bfImage.getSubimage(vertexes.get(0).getX() - 3,
 											vertexes.get(0).getY(), widthCut - 3, heightCut));
 								}
 

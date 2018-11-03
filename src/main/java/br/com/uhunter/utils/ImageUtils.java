@@ -26,8 +26,8 @@ public class ImageUtils {
 		} catch (RasterFormatException e1) {
 
 			try {
-				return bufferedImageToByteArray(bfImage.getSubimage(vertexes.get(0).getX() - 1,
-						vertexes.get(0).getY(), widthCut - 1, heightCut));
+				return bufferedImageToByteArray(bfImage.getSubimage(vertexes.get(0).getX() - 1, vertexes.get(0).getY(),
+						widthCut - 1, heightCut));
 
 			} catch (RasterFormatException e2) {
 				try {
@@ -50,8 +50,13 @@ public class ImageUtils {
 									return bufferedImageToByteArray(bfImage.getSubimage(vertexes.get(0).getX(),
 											vertexes.get(0).getY() + 1, widthCut, heightCut + 1));
 								} catch (RasterFormatException e7) {
-									return bufferedImageToByteArray(bfImage.getSubimage(vertexes.get(0).getX() - 3,
-											vertexes.get(0).getY(), widthCut - 3, heightCut));
+									try {
+										return bufferedImageToByteArray(bfImage.getSubimage(vertexes.get(0).getX() - 3,
+												vertexes.get(0).getY(), widthCut - 3, heightCut));
+									} catch (RasterFormatException e8) {
+										return bufferedImageToByteArray(bfImage.getSubimage(vertexes.get(0).getX() - 4,
+												vertexes.get(0).getY(), widthCut - 3, heightCut));
+									}
 								}
 
 							}
@@ -129,20 +134,20 @@ public class ImageUtils {
 		ByteArrayInputStream bais = new ByteArrayInputStream(byteImage);
 		return ImageIO.read(bais);
 	}
-	
+
 	public static byte[] inputStreamToByteArray(InputStream inputStream) throws IOException {
 		return ByteStreams.toByteArray(inputStream);
 	}
-	
+
 	public static InputStream byteArrayToInputStream(byte[] byteImage) throws IOException {
 		return ByteSource.wrap(byteImage).openStream();
 	}
-	
+
 	public static byte[] bufferedImageToByteArray(BufferedImage bufferedImage) throws IOException {
-		try (ByteArrayOutputStream out = new ByteArrayOutputStream()){
-            ImageIO.write(bufferedImage, "jpg", out);
-            return out.toByteArray();
-        }
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+			ImageIO.write(bufferedImage, "jpg", out);
+			return out.toByteArray();
+		}
 	}
 
 }

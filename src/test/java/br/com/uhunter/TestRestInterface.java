@@ -27,11 +27,8 @@ public class TestRestInterface {
 		jsonExpected1.put(JsonValues.IS_MOBILE_FRIENDLY_TEST.getValue(), populateIsMobileFriendlyMap(true, new HashMap()));
 		jsonExpected1.put(JsonValues.PERFORMANCE_TEST.getValue(), populatePerformanceTestMap());
 		
-		JSONObject url1 = new JSONObject();
-		url1.put("url",URL_1);
-		
 		RestInterfaceImpl usabilityRestImpl1 = new RestInterfaceImpl();
-		String result1 =  usabilityRestImpl1.setTest(url1.toString());
+		String result1 =  usabilityRestImpl1.getTest(URL_1);
 		
 		assertTrue(result1.contains(jsonExpected1.toString()));
 	}

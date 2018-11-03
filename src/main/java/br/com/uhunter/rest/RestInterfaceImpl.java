@@ -12,30 +12,24 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 
 @Path("/urest/")
 public class RestInterfaceImpl {
 
 	/**
-	 * http://usabilityhunter.appspot.com/uhunter/urest/runtest
-	 * http://usabilityhunter.appspot.com/rest/urest/runtest
+	 * http://usabilityhunter.appspot.com/uhunter/urest/runtest?url={URL}
+	 * http://usabilityhunter.appspot.com/rest/urest/runtest?url={URL}
 	 * 
-	 * @param content
+	 * @param url
 	 * @return
 	 */
-	@POST
-	@Consumes("application/json")
-	@Produces("application/json")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/runtest")
-	public String setTest(String content){
+	public String getTest(@QueryParam("url") String url) {
 		Gson gson = new Gson();
 		try {
-
-			Type type = new TypeToken<Map<String, String>>() {
-			}.getType();
-
-			Map<String, String> map = gson.fromJson(content, type);
-			String url = map.get("url");
 
 			JSONObject jsonObject = new JSONObject();
 
@@ -85,15 +79,6 @@ public class RestInterfaceImpl {
 			return gson.toJson("ServerResponse: Error: " + e.getMessage());
 
 		}
-
-	}
-
-	@GET
-	@Produces("application/json")
-	@Path("/gettest")
-	public String getTest() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

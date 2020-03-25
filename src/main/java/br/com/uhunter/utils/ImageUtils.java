@@ -8,9 +8,9 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import com.google.appengine.repackaged.com.google.common.io.ByteStreams;
 import com.google.cloud.vision.v1.Vertex;
 import com.google.common.io.ByteSource;
+import com.google.common.io.ByteStreams;
 
 public class ImageUtils {
 
@@ -54,8 +54,21 @@ public class ImageUtils {
 										return bufferedImageToByteArray(bfImage.getSubimage(vertexes.get(0).getX() - 3,
 												vertexes.get(0).getY(), widthCut - 3, heightCut));
 									} catch (RasterFormatException e8) {
-										return bufferedImageToByteArray(bfImage.getSubimage(vertexes.get(0).getX() - 4,
-												vertexes.get(0).getY(), widthCut - 3, heightCut));
+										try {
+											return bufferedImageToByteArray(
+													bfImage.getSubimage(vertexes.get(0).getX() - 4,
+															vertexes.get(0).getY(), widthCut - 3, heightCut));
+										} catch (Exception e9) {
+											try {
+												return bufferedImageToByteArray(
+														bfImage.getSubimage(vertexes.get(0).getX(),
+																vertexes.get(0).getY() + 2, widthCut, heightCut));
+											} catch (Exception e10) {
+												return bufferedImageToByteArray(
+														bfImage.getSubimage(vertexes.get(0).getX() - 15,
+																vertexes.get(0).getY(), widthCut - 13, heightCut));
+											}
+										}
 									}
 								}
 
@@ -148,6 +161,17 @@ public class ImageUtils {
 			ImageIO.write(bufferedImage, "jpg", out);
 			return out.toByteArray();
 		}
+	}
+
+	public static void byteArrayToFile(byte[] byteArray) throws FileNotFoundException, IOException {
+
+		FileOutputStream fos = new FileOutputStream("C:/Users/andri/OneDrive/Documentos/Imgs/image.jpg");
+		fos.write(byteArray);
+		FileDescriptor fd = fos.getFD();
+		fos.flush();
+		fd.sync();
+		fos.close();
+
 	}
 
 }

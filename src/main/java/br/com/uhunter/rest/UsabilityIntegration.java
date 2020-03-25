@@ -1,5 +1,7 @@
 package br.com.uhunter.rest;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.*;
 
 import br.com.uhunter.logo.LogoIdentification;
@@ -33,11 +35,36 @@ public class UsabilityIntegration {
 			byte[] byteImage = screenshotWebPageModeler.getByteImagePiece(0, 0);
 			String logo = logoIdentification.isThereALogoOnTopLeftCorner(getUrl(), byteImage);
 
-			if (logo != null) {
+			if (logo == null) {
+
+				ScreenshotWebPageModeler screenshotWebPageModeler = new ScreenshotWebPageModeler();
+				screenshotWebPageModeler.setByteImage(byteImage);
+				screenshotWebPageModeler.setHorizontalPieces(2);
+				screenshotWebPageModeler.setVerticalPieces(2);
+				byte[][][] matrix = screenshotWebPageModeler.getBytesImagePieces();
+
+				for (int i = 0; i <= 1; i++) {
+					if (logo != null) {
+						break;
+					}
+					for (int j = 0; j <= 1; j++) {
+						logo = logoIdentification.isThereALogoOnTopLeftCorner(getUrl(), matrix[i][j]);
+						if (logo != null) {
+							break;
+						}
+					}
+				}
+
+				if (logo != null) {
+					map.put(JsonValues.LOGO_NAME.getValue(), logo);
+					map.put(JsonValues.RESULT.getValue(), true);
+				} else {
+					map.put(JsonValues.RESULT.getValue(), false);
+				}
+
+			} else {
 				map.put(JsonValues.LOGO_NAME.getValue(), logo);
 				map.put(JsonValues.RESULT.getValue(), true);
-			} else {
-				throw new Exception();
 			}
 
 		} catch (Exception e) {
@@ -53,8 +80,9 @@ public class UsabilityIntegration {
 		Map<String, Object> map = new HashMap<>();
 
 		try {
-			
-			NavigationOnLeft navigationOnLeft = new NavigationOnLeft(screenshotWebPageModeler.getByteImagePiece(0, 0), url);
+
+			NavigationOnLeft navigationOnLeft = new NavigationOnLeft(screenshotWebPageModeler.getByteImagePiece(0, 0),
+					url);
 			boolean responseNavigationOnTheLeftSide = navigationOnLeft.isTheNavigationOnTheLeftSide();
 
 			if (responseNavigationOnTheLeftSide) {
@@ -95,7 +123,7 @@ public class UsabilityIntegration {
 			}
 
 		} catch (Exception e) {
-			map.put(JsonValues.IS_MOBILE_FRIENDLY.getValue(), e.getStackTrace().toString());
+			map.put(JsonValues.IS_MOBILE_FRIENDLY.getValue(),e.getMessage());
 		}
 
 		return map;
@@ -109,19 +137,12 @@ public class UsabilityIntegration {
 
 			PerformanceTest performanceTestDesktop = new PerformanceTest(getUrl(), false);
 			PerformanceTest performanceTestMobile = new PerformanceTest(getUrl(), true);
-			
-			
+
 			Map<String, Map<String, Object>> mapDevices = new HashMap<>();
 			mapDevices.put(JsonValues.MOBILE_TEST.getValue(), listDevice(performanceTestMobile));
 			mapDevices.put(JsonValues.DESKTOP_TEST.getValue(), listDevice(performanceTestDesktop));
 
-
 			performanceMap.put(JsonValues.PERFORMANCE_TEST.getValue(), mapDevices);
-			
-			
-			
-			
-			
 
 		} catch (Exception e) {
 			performanceMap.put(JsonValues.PERFORMANCE_TEST.getValue(), e.getStackTrace().toString());
@@ -144,12 +165,12 @@ public class UsabilityIntegration {
 
 		PerformanceMetric fcp = performanceTest.getFCP();
 		PerformanceMetric dcl = performanceTest.getDCL();
-		
+
 		Map<String, List<Map>> mapMetrics = new HashMap<>();
 		List<Map> metrics = new ArrayList<>();
-		metrics.add(getMetric(fcp.getType(), fcp.getDescription(),fcp.getOverallMetric(), fcp.getPageSpeedMetric(),
+		metrics.add(getMetric(fcp.getType(), fcp.getDescription(), fcp.getOverallMetric(), fcp.getPageSpeedMetric(),
 				fcp.getFast(), fcp.getAverage(), fcp.getSlow()));
-		metrics.add(getMetric(dcl.getType(), dcl.getDescription(),dcl.getOverallMetric(), dcl.getPageSpeedMetric(),
+		metrics.add(getMetric(dcl.getType(), dcl.getDescription(), dcl.getOverallMetric(), dcl.getPageSpeedMetric(),
 				dcl.getFast(), dcl.getAverage(), dcl.getSlow()));
 
 		mapMetrics.put(JsonValues.METRICS.getValue(), metrics);

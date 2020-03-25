@@ -37,6 +37,10 @@ public class TestNavigationOnLeft {
 	private static final String URL_3 = "https://pt.stackoverflow.com/";
 	private static final File FILE_3 = new File("imgTest/stackoverflow.jpg");
 	private NavigationOnLeft navigationOnLeft3;
+	
+	private static final String URL_4 = "https://www.google.com.br/";
+	private static final File FILE_4 = new File("imgTest/googleNavigation.jpg");
+	private NavigationOnLeft navigationOnLeft4;
 
 	@Before
 	public void initialConfig() throws Exception {
@@ -48,6 +52,9 @@ public class TestNavigationOnLeft {
 				
 		byte[] byteImage3 = Files.readAllBytes(FILE_3.toPath());
 		navigationOnLeft3 = new NavigationOnLeft(byteImage3, URL_3);
+		
+		byte[] byteImage4 = Files.readAllBytes(FILE_4.toPath());
+		navigationOnLeft4 = new NavigationOnLeft(byteImage4, URL_4);
 	}
 
 	@Test

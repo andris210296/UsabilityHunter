@@ -71,6 +71,11 @@ public class RestInterfaceImpl {
 			
 			while(jsonObject.keySet().size() != 4) {
 			}
+			
+			threadLogo.interrupt();
+			threadNavigation.interrupt();
+			threadMobile.interrupt();				
+			threadPerformance.interrupt();
 
 			return jsonObject.toString();
 

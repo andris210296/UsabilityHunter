@@ -23,12 +23,14 @@ public class TestUsabilityIntegration {
 	private static final String URL_2 = "https://pt.stackoverflow.com/";
 	private static final String URL_3 = "https://cursosextensao.usp.br/course/view.php?id=131&section=0";
 	private static final String URL_4 = "https://www.vestibularfatec.com.br/home/";
+	private static final String URL_5 = "https://www.youtube.com/";
 	
 	
 	private UsabilityIntegration usabilityIntegration1;
 	private UsabilityIntegration usabilityIntegration2;
 	private UsabilityIntegration usabilityIntegration3;
 	private UsabilityIntegration usabilityIntegration4;
+	private UsabilityIntegration usabilityIntegration5;
 			
 	@Before
 	public void initialConfig() throws Exception {
@@ -36,6 +38,7 @@ public class TestUsabilityIntegration {
 		usabilityIntegration2 = new UsabilityIntegration(URL_2);
 		usabilityIntegration3 = new UsabilityIntegration(URL_3);
 		usabilityIntegration4 = new UsabilityIntegration(URL_4);
+		usabilityIntegration5 = new UsabilityIntegration(URL_5);
 	}
 	
 	@Test
@@ -45,9 +48,13 @@ public class TestUsabilityIntegration {
 		Map mapResult1 = usabilityIntegration1.doLogoTest();		
 		assertEquals(mapExpected1, mapResult1);	
 					
-		Map mapExpected2 = populateLogoMap("StackOverflow");	
+		Map mapExpected2 = populateLogoMap("stack");	
 		Map mapResult2 = usabilityIntegration2.doLogoTest();		
-		assertEquals(mapExpected2, mapResult2);		
+		assertEquals(mapExpected2, mapResult2);
+		
+		Map mapExpected3 = populateLogoMap("YouTube");	
+		Map mapResult3 = usabilityIntegration5.doLogoTest();		
+		assertEquals(mapExpected3, mapResult3);
 		
 	}
 	

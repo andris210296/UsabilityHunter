@@ -1,7 +1,5 @@
 package br.com.uhunter.logo;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +15,14 @@ public class LogoIdentification {
 	private String pageTitle;
 	
 	
-	public String isThereALogoOnTopLeftCorner(String url, byte[] byteImage) throws Exception {
-		
+	public String isThereALogoOnTopLeftCorner(String url, byte[] byteImage) throws Exception {		
 		List<String> logos = GoogleVision.detectLogo(byteImage);
 		setPageTitle(getWebPageTitleFromHtml(url));
+		
+		//TODO melhorar a pesquisa por logos do tipo texto 
+		if(logos.isEmpty()) {
+			logos = GoogleVision.detectText(byteImage);
+		}
 		
 		return isStringInsideOfTheTitle(logos);
 	}

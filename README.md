@@ -15,13 +15,75 @@ Many sites are built from the developer’s own intuition instead of proven usab
 **Usability Hunter** helps by automating checks for five heuristics. You send a page URL via HTTP GET; the API screenshots and analyzes the page (with Google Vision, PageSpeed, and mobile-friendliness APIs) and returns a JSON report.
 
 ```
-GET /uhunter/urest/runtest?url={url_to_test}
+GET /uhunter/runtests?url={url_to_test}
 ```
 
-Example (as deployed in the thesis):
+Example:
 
 ```
-https://usabilityhunter.appspot.com/uhunter/urest/runtest?url=https://www.wikipedia.org
+http://localhost:8080/uhunter/runtests?url=https://www.wikipedia.org
+```
+
+The original thesis paths still work as aliases: `/uhunter/urest/runtest` and `/rest/urest/runtest`.
+
+Error responses are JSON (`{"error": "..."}`):
+
+| Status | When |
+| --- | --- |
+| `400` | `url` missing, malformed, not `http(s)`, or points to a private/loopback/link-local address (SSRF guard) |
+| `503` + `Retry-After` | All worker threads and the queue are busy; retry shortly |
+| `504` | The checks exceeded `uhunter.validation-timeout` (default `4m`) |
+| `500` | Any other failure |
+
+---
+
+## Run locally
+
+Requires **Java 17+** and Maven (or the Maven Wrapper once generated).
+
+1. Copy the local config template and fill in your keys:
+
+```bash
+cp src/main/resources/application-local.properties.example src/main/resources/application-local.properties
+```
+
+2. Activate the `local` profile.
+
+**IntelliJ:** Run → Edit Configurations… → select `UsabilityHunterApplication` → **Active profiles:** `local`
+
+**Maven:**
+
+```bash
+./mvnw spring-boot:run -Dspring-boot.run.profiles=local
+```
+
+3. Open [http://localhost:8080](http://localhost:8080).
+
+`application-local.properties` is gitignored so secrets stay off the repo.
+
+**Google Cloud Vision** (logo + navigation OCR) reads credentials from `uhunter.google-application-credentials`, then `GOOGLE_APPLICATION_CREDENTIALS`, then Application Default Credentials:
+
+```bash
+gcloud auth application-default login
+# or set GOOGLE_APPLICATION_CREDENTIALS=/absolute/path/to/service-account.json
+```
+
+Enable the **PageSpeed Insights API** on the Google Cloud project that owns your API key.
+
+### Screenshot provider (Strategy pattern)
+
+Screenshots are pluggable via `uhunter.screenshot-provider`:
+
+| Value | Behavior |
+| --- | --- |
+| `pagespeed` (default) | Uses Lighthouse screenshots from PageSpeed Insights (prefers **full-page**, falls back to final thumbnail) |
+| `phantomjs` | Legacy PhantomJsCloud capture |
+
+Switch in `application-local.properties`:
+
+```properties
+uhunter.screenshot-provider=pagespeed
+# uhunter.screenshot-provider=phantomjs
 ```
 
 ---
@@ -30,7 +92,7 @@ https://usabilityhunter.appspot.com/uhunter/urest/runtest?url=https://www.wikipe
 
 ### 1. Logo in the top-left corner
 
-Users often look first at the top-left to confirm they are on the right site. The logo also acts as a “home” affordance. Usability Hunter crops that region from a page screenshot and uses Google Vision (logo/text detection) to verify whether a brand/logo matching the page title is present.
+Users often look first at the top-left to confirm they are on the right site. The logo also acts as a “home” affordance. Usability Hunter crops that region from a page screenshot and uses Google Vision in cascade: **logo detection** → **web detection** (for brands missing from the logo catalog) → **OCR text**, then matches against page brand candidates (title, host, acronyms).
 
 <p align="center">
   <img src="imgTest/youtube.jpg" alt="YouTube homepage with logo in the top-left" width="720" />
@@ -66,15 +128,15 @@ Hick’s law: more unordered choices make selection slower. When left navigation
 
 ### 4. Responsiveness (mobile-friendly)
 
-Checks whether the page adapts to smaller screens using Google’s mobile-friendly test. If it fails, the JSON includes issues such as missing viewport, fixed-width layout, tiny fonts, or tap targets that are too close.
+Google’s Mobile-Friendly Test API was retired in 2023, so Usability Hunter now runs **local HTML heuristics** (viewport meta tag, fixed width, legacy plugins). If checks fail, `listOfIssues` explains why.
 
 ### 5. Performance
 
-Runs Google PageSpeed-style metrics for **desktop** and **mobile**, including:
+Uses **PageSpeed Insights API v5** for **desktop** and **mobile**, including:
 
-- **optimizationPoints** — how much improvement is needed (0–100; higher means more work)
-- **loadingOverall** — `FAST`, `AVERAGE`, or `LOW`
-- **FCP** (First Contentful Paint) and **DCL** (DOM Content Loaded), with load distribution and page speed in milliseconds
+- **optimizationPoints** — estimated improvement needed (0–100; derived from Lighthouse performance score)
+- **loadingOverall** — `FAST`, `AVERAGE`, `SLOW`, or CrUX overall category when available
+- **FCP** and **LCP**, using Chrome UX Report field data when present, otherwise Lighthouse lab metrics
 
 ---
 
@@ -97,15 +159,31 @@ The thesis walks through a full Wikipedia example in **Figura 7** of the PDF.
 
 | Area | Technologies |
 | --- | --- |
-| Language / API | Java 8, Jersey (JAX-RS), Gson / JSON |
-| Packaging | Maven WAR, Google App Engine |
-| Page capture | Selenium |
+| Language / API | Java 17, Spring Boot 3, Maven |
+| Page capture | Strategy: PageSpeed/Lighthouse screenshots (default) or PhantomJsCloud |
 | Vision / OCR | Google Cloud Vision |
 | HTML parsing | Jsoup |
-| Performance / mobile | Google PageSpeed / Search Console mobile-friendly APIs |
-| Image processing | ImageJ |
+| Performance / mobile | Google PageSpeed Insights v5 + local HTML mobile heuristics |
 
-Main orchestration lives in `UsabilityIntegration`; the REST entry point is `RestInterfaceImpl` (`/urest/runtest`).
+Orchestration lives in `UsabilityValidationService` / `service.impl.UsabilityValidationServiceImpl`; the REST entry point is `UsabilityController` (`/uhunter/runtests`, plus the legacy `urest` aliases). Per request, `AnalysisContextFactory` does the shared slow setup once (HTML fetch and screenshot) and returns an immutable `AnalysisContext`; the four heuristics then run in parallel as `UsabilityCheck`s that all take just that context.
+
+| Package | Contents |
+| --- | --- |
+| `api`, `api.dto` | Controller, `ApiExceptionHandler`, response records (`*Dto`) |
+| `service`, `service.impl` | Orchestrator: builds the context, runs the checks in parallel with timeout and back-pressure |
+| `validations` | `UsabilityCheck`, `AbstractUsabilityCheck` (shared error fallback), `AnalysisContext`, `AnalysisContextFactory` |
+| `validations.{logo,navigation,responsive,performance}` | One `*Check` Spring bean each, plus the algorithm in `utils` (pure static helpers) or, for performance, `PerformanceAnalysis` / `PerformanceMetric` |
+| `page` | `PageDocument`: the fetched, parsed HTML (SSRF-checked, redirects re-validated) |
+| `screenshot` | `Screenshot` (immutable value: normalizes to JPEG, cuts regions), `ScreenshotProvider` strategy and its two implementations |
+| `pagespeed` | `PageSpeedInsightsClient`: application-wide bean with a bounded TTL cache and in-flight de-duplication |
+| `vision` | `VisionApi` interface, `GoogleVisionApi` (owns the Vision client lifecycle, lazy), `VisionTextBlock` |
+| `security` | `UrlSafetyValidator` (SSRF guard) |
+| `config` | `UhunterProperties`, `AsyncConfig` (shared executor), `ScreenshotConfig` (picks the provider bean) |
+| `utils` | `ImageUtils` only: pure, stateless image helpers |
+
+Vision and PageSpeed are injected, not static, so checks are unit-tested with fakes (`FakeVision`, a stubbed `PageSpeedInsightsClient`). Heuristic responses keep the thesis JSON keys and may also include optional `confidence` / `evidence` fields.
+
+This codebase was modernized from the original thesis stack (Jersey 1 + Google App Engine WAR + vendored JARs) to Spring Boot with Maven-managed dependencies.
 
 ---
 

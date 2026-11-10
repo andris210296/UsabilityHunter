@@ -1,0 +1,13 @@
+# Copy this file to application-local.properties and fill in your keys.
+# application-local.properties is gitignored — do not commit real secrets.
+#
+# In IntelliJ: Run → Edit Configurations → Active profiles: local
+
+uhunter.google-api-key=your-google-api-key
+uhunter.google-application-credentials=/absolute/path/to/service-account.json
+
+# pagespeed (default, Google-only screenshots) or phantomjs (legacy)
+uhunter.screenshot-provider=pagespeed
+
+# Only required when uhunter.screenshot-provider=phantomjs
+# uhunter.phantomjs-cloud-api-keys=your-phantomjs-cloud-key-1,your-phantomjs-cloud-key-2

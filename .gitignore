@@ -1,2 +1,18 @@
 /target/
 .idea/
+!.run/
+*.iml
+.classpath
+.project
+.settings/
+.vscode/
+.DS_Store
+*.class
+*.log
+.env
+.env.*
+!.env.example
+src/main/resources/application-local.properties
+
+# Local validation output
+/tmp/
